@@ -157,7 +157,7 @@ const Presentation: NextPage = () => {
               <div className="card bg-base-100 shadow-sm flex-1">
                 <figure>
                   <motion.img
-                    src="https://logowik.com/content/uploads/images/ronin-wallet-icon5932.jpg"
+                    src="https://i.seadn.io/s/raw/files/cdb5b18209009ac660230e86f8bea7df.png?auto=format&dpr=1&w=1920"
                     alt="Shoes"
                     className="w-full object-cover h-64"
                     whileHover={{ rotateY: [0, 360] }}

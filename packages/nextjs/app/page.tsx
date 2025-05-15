@@ -20,7 +20,7 @@ const Home: NextPage = () => {
 
   return (
     <>
-      {/* <div className="grow bg-base-300 w-full mt-12 px-8 py-12">
+      <div className="grow bg-base-300 w-full mt-12 px-8 py-12">
         <div className="flex flex-col items-center">
           <h2 className="text-3xl font-bold mb-4">Car Collection</h2>
           <div className="flex gap-2 mb-6">
@@ -44,7 +44,7 @@ const Home: NextPage = () => {
             ))}
           </div>
         </div>
-      </div> */}
+      </div>
     </>
   );
 };

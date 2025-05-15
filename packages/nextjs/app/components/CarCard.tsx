@@ -12,7 +12,6 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showRace, setShowRace] = useState(false);
 
-  // Define the four stat configurations for common cars (excluding fuel)
   const commonCarConfigs = [
     { speed: 45, handling: 45, grip: 20, acceleration: 10 },
     { speed: 15, handling: 25, grip: 40, acceleration: 40 },
@@ -20,14 +19,12 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
     { speed: 30, handling: 30, grip: 30, acceleration: 30 },
   ];
 
-  // Determine stats for the car
-  let carStats = { ...car.stats }; // Default to original stats
+  let carStats = { ...car.stats }; 
   if (car.type.toLowerCase() === 'común' || car.type.toLowerCase() === 'common') {
-    // Assign one of the four configs based on car.id (assuming id is a number like 1, 2, 3, 4)
     const configIndex = (parseInt(car.id) - 1) % commonCarConfigs.length;
     carStats = {
       fuel: 30, 
-      ...commonCarConfigs[configIndex], // Apply the selected config for other stats
+      ...commonCarConfigs[configIndex], 
     };
   }
 

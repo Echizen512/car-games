@@ -45,7 +45,7 @@ const Presentation: NextPage = () => {
               }}
               className="flex flex-col gap-5 justify-center items-center mb-24 pointer-events-auto"
             >
-              <h1 className="text-6xl font-semibold">Car Game</h1>
+              <h1 className="text-6xl font-semibold">Ronin Zodiacs</h1>
               <h3>Connect your wallet just now!</h3>
 
               <RainbowKitCustomConnectButton />
@@ -110,72 +110,70 @@ const Presentation: NextPage = () => {
             </div>
           </motion.section>
 
-          <section className="mt-12">
-            <h3 className="text-center text-3xl font-semibold">What is car games?</h3>
-            <p className="px-28 text-lg indent-8 text-center">
-              Car Games is a competitive game based on NFTs, where players participate in exciting races against three
-              virtual machines, forming a total of four racers. Each NFT represents a car with unique statistics and
-              four different configurations, which influences performance on the track.
-            </p>
+    <section className="mt-12">
+  <h3 className="text-center text-3xl font-semibold">What is Ronin Zodiacs?</h3>
+  <div className="text-center mb-12">
+    <img src="/ronin.png" alt="NFT Racing Logo" className="mx-auto mb-4 w-20 h-auto" />
+    <p className="text-lg">
+      🚀 Ronin Zodiacs is a competitive game where your NFTs come to life in a fierce race against 3 virtual machines. With different rarities, strategic fuel consumption, and a reward system with optimized tokenomics, each race will push you to the limit.
+    </p>
+  </div>
 
-            <article className="flex gap-5 mx-4 mt-8">
-              <div className="card bg-base-100 shadow-sm flex-1">
-                <figure className="w-full">
-                  <motion.img
-                    src="https://coin-images.coingecko.com/coins/images/55344/large/ronen_profile.jpg?1745512221"
-                    alt="Shoes"
-                    className="w-full object-cover h-64"
-                    whileHover={{ rotateY: [0, 360] }}
-                    transition={{ duration: 1, ease: "easeInOut" }}
-                  />
-                </figure>
-                <div className="card-body">
-                  <h2 className="card-title">Basado en la red de Ronin</h2>
-                  <p>Para mayor velocidad y seguirdad</p>
-                </div>
-              </div>
+  <div className="flex gap-6 justify-center mb-4">
+    {/* Card Game Mode */}
+    <div className="bg-primary shadow-lg rounded-lg overflow-hidden transform hover:-translate-y-2 transition duration-500 w-80">
+      <img src="/game-mode.png" alt="Game Mode 🎮" className="w-full h-44" />
+      <div className="p-6">
+        <h2 className="text-xl font-semibold mb-4">Game Mode 🎮</h2>
+        <p className="text-justify">
+          🏎️ In each match, you will compete against 3 virtual machines, ensuring a total of 4 racers on the competition leaderboard.
+          🏆 The top 3 places will receive token rewards:
+        </p>
+        <ul className="list-disc pl-5">
+          <li className='mb-3'>🥇 <span className="font-bold">1st place:</span> 10 tokens</li>
+          <li className='mb-3'>🥈 <span className="font-bold">2nd place:</span> 7.5 tokens</li>
+          <li className='mb-3'>🥉 <span className="font-bold">3rd place:</span> 5 tokens</li>
+        </ul>
+      </div>
+    </div>
 
-              <div className="card bg-base-100 shadow-sm flex-1">
-                <figure>
-                  <motion.img
-                    src="https://static.vecteezy.com/system/resources/thumbnails/005/146/542/small_2x/winner-cups-in-pixel-art-style-vector.jpg"
-                    alt="Shoes"
-                    className="w-full object-cover h-64"
-                    whileHover={{ rotateY: [0, 360] }}
-                    transition={{ duration: 1, ease: "easeInOut" }}
-                  />
-                </figure>
-                <div className="card-body">
-                  <h2 className="card-title">Win Rate and Balance of Power</h2>
-                  <p>
-                    The win rate is determined by the rarity of the car. It would make no sense for a common car to beat
-                    an epic, so the balance of power remains logical.
-                  </p>
-                </div>
-              </div>
+    {/* Card Fuel System */}
+    <div className="bg-primary shadow-lg rounded-lg overflow-hidden transform hover:-translate-y-2 transition duration-500 w-80">
+      <img src="/game-system.jpg" alt="Fuel System ⛽" className="w-full h-44" />
+      <div className="p-6">
+        <h2 className="text-xl font-semibold mb-4">Fuel System ⛽</h2>
+        <p className="text-justify">
+          The amount of fuel depends on the rarity of the NFT. Each race consumes 15 fuel, so strategic management will be key:
+        </p>
+        <ul className="list-disc pl-5">
+          <li className='mb-2'>🟢 <span className="font-bold">Common:</span> 30 fuel</li>
+          <li className='mb-2'>🔵 <span className="font-bold">Uncommon:</span> 45 fuel</li>
+          <li className='mb-2'>🟣 <span className="font-bold">Rare:</span> 60 fuel</li>
+          <li className='mb-2'>🟠 <span className="font-bold">Epic:</span> 75 fuel</li>
+        </ul>
+      </div>
+    </div>
 
-              <div className="card bg-base-100 shadow-sm flex-1">
-                <figure>
-                  <motion.img
-                    src="https://i.seadn.io/s/raw/files/cdb5b18209009ac660230e86f8bea7df.png?auto=format&dpr=1&w=1920"
-                    alt="Shoes"
-                    className="w-full object-cover h-64"
-                    whileHover={{ rotateY: [0, 360] }}
-                    transition={{ duration: 1, ease: "easeInOut" }}
-                  />
-                </figure>
-                <div className="card-body">
-                  <h2 className="card-title">Token Mechanics</h2>
-                  <p>
-                    The token will have a fee-based buyback system, which will allow stability within the game and
-                    strengthen its financial ecosystem. Car Games is not only a speed race, but a game of strategy where
-                    decisions about fuel, rarity and reward withdrawal make the difference in the success of the
-                    players.
-                  </p>
-                </div>
-              </div>
-            </article>
-          </section>
+    {/* Card Rewards System */}
+    <div className="bg-primary shadow-xl rounded-lg overflow-hidden transform hover:-translate-y-2 transition duration-500 w-80">
+      <img src="/rewards.png" alt="Rewards System 💰" className="w-full h-44" />
+      <div className="p-6">
+        <h2 className="text-xl font-semibold mb-4 text-white">Rewards System 💰</h2>
+        <p className="text-white text-lg text-justify">
+          To prevent massive dumping, token withdrawals have penalties based on waiting time:
+        </p>
+        <ul className="list-disc pl-5">
+          <li className='mb-3'>🚨 <span className="font-bold">Immediate withdrawal:</span> 50% penalty</li>
+          <li className='mb-3'>⏳ <span className="font-bold">After 24 hours:</span> 30%</li>
+          <li className='mb-3'>🔄 <span className="font-bold">After 48 hours:</span> 20%</li>
+          <li className='mb-3'>✅ <span className="font-bold">After 72 hours:</span> Only 5%</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
         </>
       )}
     </main>

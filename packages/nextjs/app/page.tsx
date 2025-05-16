@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import CarCard from "./components/CarCard";
 import { carData } from "./data/carData";
 import type { NextPage } from "next";

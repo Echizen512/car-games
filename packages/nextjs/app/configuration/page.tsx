@@ -1,17 +1,25 @@
+"use client";
+
 import { NextPage } from "next";
-import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
+import { useAccount } from "wagmi";
+import DialogOnlyAdmin from "~~/components/DialogOnlyAdmin";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 const Configuration: NextPage = () => {
+  const { address } = useAccount();
+
+  //smart contract
+  const { data: owner } = useScaffoldReadContract({
+    contractName: "RoninZodiacs",
+    functionName: "owner",
+  });
+
   return (
-    <dialog id="my_modal_1" className="modal" open>
-      <div className="modal-box">
-        <h3 className="font-bold text-lg">Hello!</h3>
-        <p className="py-4">Connect your wallet</p>
-        <div className="modal-action justify-center">
-          <RainbowKitCustomConnectButton />
-        </div>
-      </div>
-    </dialog>
+    <section>
+      {address !== owner && <DialogOnlyAdmin />}
+
+      <h1>Configuration</h1>
+    </section>
   );
 };
 

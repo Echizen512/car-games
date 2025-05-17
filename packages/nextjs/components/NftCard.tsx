@@ -36,8 +36,6 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
     }
   };
 
-  console.log(nftPreview?.attributes.slice(1));
-
   //effects
   useEffect(() => {
     const getData = async () => {
@@ -70,7 +68,7 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
       <div className="card bg-base-100 flex-1 shadow-sm">
         {nftPreview?.image !== undefined ? (
           <div className="relative h-64 w-full">
-            <Image src={nftPreview.image} alt={nftPreview.name} fill={true} className="rounded-t-lg" />
+            <Image src={nftPreview.image} alt={nftPreview.name} fill={true} className="rounded-t-lg object-fill" />
           </div>
         ) : (
           <div className="skeleton w-full h-full rounded-b-none" />
@@ -80,7 +78,8 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
           <p>{nftPreview?.description}</p>
 
           {revealNFT !== undefined &&
-            revealNFT &&
+            nftPreview !== undefined &&
+            nftPreview?.attributes !== undefined &&
             nftPreview?.attributes.slice(1).map((x, y) => (
               <div key={y} className="flex flex-col">
                 <span className="font-semibold">{x.trait_type.toString()}</span>

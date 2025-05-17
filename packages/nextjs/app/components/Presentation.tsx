@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion } from "motion/react";
 import { NextPage } from "next";
 import { ChevronDoubleDownIcon } from "@heroicons/react/24/outline";
@@ -14,7 +15,7 @@ const Presentation: NextPage = () => {
   }, []);
 
   return (
-    <main className="flex flex-col justify-center items-center">
+    <main className="flex flex-col flex-1 justify-center items-center">
       {!load ? (
         <div className="w-screen h-screen flex justify-center items-center">
           <span className="loading loading-spinner loading-xl scale-105" />
@@ -47,6 +48,7 @@ const Presentation: NextPage = () => {
               <RainbowKitCustomConnectButton />
             </motion.article>
 
+            {/* cars */}
             <div className="flex justify-center top-14">
               <motion.img
                 initial={{ x: 800 }}
@@ -87,13 +89,10 @@ const Presentation: NextPage = () => {
               />
             </div>
 
-            <div className="w-full h-32 relative z-10">
-              <img
-                src="https://png.pngtree.com/background/20220726/original/pngtree-road-vector-highway-background-line-picture-image_1817249.jpg"
-                className="w-full h-full object-cover z-20"
-                alt="carretera prestada"
-              />
+            {/* Wave */}
+            <Image src="/wave-haikei.png" width={1000} height={500} alt="wave" className="w-full h-40 absolute" />
 
+            <div className="w-full h-32 relative z-10">
               <div className="w-full absolute bottom-0 flex justify-center items-center z-0">
                 <motion.span
                   animate={{ scale: [1, 0.8, 1], y: [-6, 0, -6] }}

@@ -5,6 +5,11 @@ import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { ERC721Pausable } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
+//TODO: agregar el limite de nft en el apartado de compra
+//TODO: agregar todo completo al transferfir (ultima function del smart)
+//TODO: crear un apartado para las graficas y botones importantes como el revelar NFT, cambiar limite de NFT etc
+//TODO: crear otro contract para el apartado del dinero
+//TODO: agregar full skeleton a las cards de los NFT
 contract RoninZodiacs is ERC721, ERC721Pausable, Ownable {
     struct NFT {
         uint256 tokenId;
@@ -37,9 +42,9 @@ contract RoninZodiacs is ERC721, ERC721Pausable, Ownable {
         _unpause();
     }
 
-    function addTokenUri(string memory _uriCid) public onlyOwner {
-        require(bytes(_uriCid).length > 0, "URI is not empty");
-        _tokenUriMap[_uriId] = string(abi.encodePacked("ipfs://", _uriCid));
+    function addTokenCid(string memory _cid) public onlyOwner {
+        require(bytes(_cid).length > 0, "URI is not empty");
+        _tokenUriMap[_uriId] = string(abi.encodePacked("ipfs://", _cid));
         _uriId++;
     }
 

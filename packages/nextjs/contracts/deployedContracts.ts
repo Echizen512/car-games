@@ -279,11 +279,11 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "string",
-              name: "_uriCid",
+              name: "_cid",
               type: "string",
             },
           ],
-          name: "addTokenUri",
+          name: "addTokenCid",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -489,6 +489,19 @@ const deployedContracts = {
           name: "renounceOwnership",
           outputs: [],
           stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "reveal",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
           type: "function",
         },
         {

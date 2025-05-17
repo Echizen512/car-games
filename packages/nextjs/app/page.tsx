@@ -14,15 +14,18 @@ const Home: NextPage = () => {
   const { address } = useAccount();
   const [selectedRarity, setSelectedRarity] = useState<string>("all");
 
-  // const filteredCars = selectedRarity === "all" ? carData : carData.filter(car => car.type.toLowerCase() === selectedRarity.toLowerCase());
-
   const rarityTypes = ["All", "Common", "Uncommon", "Rare", "Epic"];
 
   //smart contract
-  const { data: nose } = useScaffoldReadContract({
+  const { data: userNFTs } = useScaffoldReadContract({
     contractName: "RoninZodiacs",
     functionName: "getUserNFTs",
     args: [address],
+  });
+
+  const { data: revealNFT } = useScaffoldReadContract({
+    contractName: "RoninZodiacs",
+    functionName: "reveal",
   });
 
   const { writeContractAsync: writeRoninZodiacsAsync } = useScaffoldWriteContract({ contractName: "RoninZodiacs" });
@@ -57,10 +60,11 @@ const Home: NextPage = () => {
       </button>
 
       <section className="grid grid-cols-4 p-5 gap-2">
-        {selectedRarity.toLocaleLowerCase() === rarityTypes[0].toLowerCase() && (
-          <>{nose?.map((data, key) => <NftCard key={key} data={data} />)}</>
-        )}
+        {userNFTs?.map((data, key) => (
+          <NftCard key={key} data={data} revealNFT={revealNFT} selectedRarity={selectedRarity} />
+        ))}
       </section>
+
       {/* <div className="grow bg-base-300 w-full mt-12 px-8 py-12"> */}
       {/* <div className="flex flex-col items-center">
           <h2 className="text-3xl font-bold mb-4">Car Collection</h2>

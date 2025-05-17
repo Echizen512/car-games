@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useRef } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { hardhat } from "viem/chains";
-import { Bars3Icon, BugAntIcon, BuildingLibraryIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, BugAntIcon, BuildingLibraryIcon, Cog6ToothIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { useOutsideClick, useTargetNetwork } from "~~/hooks/scaffold-eth";
 
@@ -21,11 +21,15 @@ export const menuLinks: HeaderMenuLink[] = [
     href: "/",
     icon: <PhotoIcon className="h-4 w-4" />,
   },
-
   {
     label: "Buy NFT",
     href: "/buy-nft",
     icon: <BuildingLibraryIcon className="h-4 w-4" />,
+  },
+  {
+    label: "Configuration",
+    href: "/configuration",
+    icon: <Cog6ToothIcon className="h-4 w-4" />,
   },
   {
     label: "Debug Contracts",

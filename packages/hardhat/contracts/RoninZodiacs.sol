@@ -5,6 +5,11 @@ import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { ERC721Pausable } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
+//TODO: agregar el limite de nft en el apartado de compra
+//TODO: agregar todo completo al transferfir (ultima function del smart)
+//TODO: crear un apartado para las graficas y botones importantes como el revelar NFT, cambiar limite de NFT etc
+//TODO: crear otro contract para el apartado del dinero
+//TODO: agregar full skeleton a las cards de los NFT
 contract RoninZodiacs is ERC721, ERC721Pausable, Ownable {
     struct NFT {
         uint256 tokenId;
@@ -12,13 +17,15 @@ contract RoninZodiacs is ERC721, ERC721Pausable, Ownable {
     }
 
     //states
-    uint256 public nextTokenId;
     uint256 private _limitToken = 1; //poner esto en constructor
     uint256 private _uriId;
-    bool private _reveal;
     string private _undisclosedUri = "ipfs://QmXzT3LSSnAuTtF46nWAr8mtBJguaxwK3DWb54RY9EXdmj";
     mapping(uint256 => string) private _tokenUriMap;
     mapping(address => uint256[]) private _ownedTokens;
+
+    //public states
+    uint256 public nextTokenId;
+    bool public reveal;
 
     constructor(address initialOwner) ERC721("RoninZodiacs", "RZK") Ownable(initialOwner) {}
 
@@ -37,19 +44,19 @@ contract RoninZodiacs is ERC721, ERC721Pausable, Ownable {
         _unpause();
     }
 
-    function addTokenUri(string memory _uriCid) public onlyOwner {
-        require(bytes(_uriCid).length > 0, "URI is not empty");
-        _tokenUriMap[_uriId] = string(abi.encodePacked("ipfs://", _uriCid));
+    function addTokenCid(string memory _cid) public onlyOwner {
+        require(bytes(_cid).length > 0, "URI is not empty");
+        _tokenUriMap[_uriId] = string(abi.encodePacked("ipfs://", _cid));
         _uriId++;
     }
 
     function disclose() public onlyOwner {
-        require(!_reveal, "NFTs have already been disclosed");
-        _reveal = true;
+        require(!reveal, "NFTs have already been disclosed");
+        reveal = true;
     }
 
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        return (_reveal) ? _tokenUriMap[tokenId] : _undisclosedUri;
+        return (reveal) ? _tokenUriMap[tokenId] : _undisclosedUri;
     }
 
     function getUserNFTs(address _owner) public view returns (NFT[] memory) {

@@ -6,20 +6,27 @@ import { ERC721Pausable } from "@openzeppelin/contracts/token/ERC721/extensions/
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract RoninZodiacs is ERC721, ERC721Pausable, Ownable {
+    struct NFT {
+        uint256 tokenId;
+        string tokenURI;
+    }
+
     //states
-    uint256 private _nextTokenId;
+    uint256 public nextTokenId;
     uint256 private _limitToken = 1; //poner esto en constructor
     uint256 private _uriId;
-    bool _reveal;
-    string private _undisclosedUri = "ipfs://{CID}";
+    bool private _reveal;
+    string private _undisclosedUri = "ipfs://QmXzT3LSSnAuTtF46nWAr8mtBJguaxwK3DWb54RY9EXdmj";
     mapping(uint256 => string) private _tokenUriMap;
+    mapping(address => uint256[]) private _ownedTokens;
 
     constructor(address initialOwner) ERC721("RoninZodiacs", "RZK") Ownable(initialOwner) {}
 
     function safeMint(address to) public {
-        require(_nextTokenId <= _limitToken, "los tokens se acabaron");
-        _safeMint(to, _nextTokenId);
-        _nextTokenId++;
+        require(nextTokenId <= _limitToken, "los tokens se acabaron");
+        _safeMint(to, nextTokenId);
+        _ownedTokens[to].push(nextTokenId);
+        nextTokenId++;
     }
 
     function pause() public onlyOwner {
@@ -36,10 +43,28 @@ contract RoninZodiacs is ERC721, ERC721Pausable, Ownable {
         _uriId++;
     }
 
+    function disclose() public onlyOwner {
+        require(!_reveal, "NFTs have already been disclosed");
+        _reveal = true;
+    }
+
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         return (_reveal) ? _tokenUriMap[tokenId] : _undisclosedUri;
     }
 
+    function getUserNFTs(address _owner) public view returns (NFT[] memory) {
+        uint256 balance = _ownedTokens[_owner].length;
+        NFT[] memory nfts = new NFT[](balance);
+
+        for (uint256 i = 0; i < balance; i++) {
+            uint256 tokenId = _ownedTokens[_owner][i];
+            nfts[i] = NFT(tokenId, tokenURI(tokenId));
+        }
+
+        return nfts;
+    }
+
+    // function transferNFT(address from, address to, uint256 tokenId) public { _transfer(from, to, tokenId); // Transferencia estándar ERC-721 // Eliminar el NFT de la dirección anterior uint256[] storage fromTokens = _ownedTokens[from]; for (uint256 i = 0; i < fromTokens.length; i++) { if (fromTokens[i] == tokenId) { fromTokens[i] = fromTokens[fromTokens.length - 1]; // Mover el último elemento fromTokens.pop(); // Remover el último break; } } // Agregar el NFT a la nueva dirección _ownedTokens[to].push(tokenId); }
     // The following functions are overrides required by Solidity.
     function _update(
         address to,

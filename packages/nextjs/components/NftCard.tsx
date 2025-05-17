@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import PlaceHolderNftCard from "./PlaceHolderNftCard";
 import { NextPage } from "next";
 import { INftPreview } from "~~/types/nft-data";
 
@@ -16,7 +17,7 @@ type NftCardProps = {
 const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) => {
   //effects
   const [nftPreview, setNftPreview] = useState<INftPreview | undefined>(undefined);
-  const [loadData, setLoadData] = useState(false);
+  const [loadData, setLoadData] = useState<boolean>(false);
 
   //functions
   const getPreviewNft = async (tokenUri: string) => {
@@ -46,9 +47,6 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
     getData();
   }, [data.tokenURI]);
 
-  console.log(nftPreview);
-  console.log(nftPreview?.attributes[0].value ?? "");
-
   return !revealNFT ? (
     <div className="card bg-base-100 flex-1 shadow-sm">
       {nftPreview?.image !== undefined ? (
@@ -64,36 +62,30 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
       </div>
     </div>
   ) : loadData ? (
-    <div className="card bg-base-100 flex-1 shadow-sm">
-      {nftPreview?.image !== undefined ? (
-        <div className="relative h-60 w-full rounded-t-md">
-          <Image src={nftPreview.image} alt={nftPreview.name} fill={true} />
-        </div>
-      ) : (
-        <div className="skeleton w-full h-full rounded-b-none" />
-      )}
-      <div className="card-body">
-        <h2 className="card-title">{data.tokenId.toString()}</h2>
-        <p>{nftPreview?.description}</p>
-
-        {revealNFT !== undefined && revealNFT && (
-          <div className="flex items-center justify-center gap-5 px-2">
-            <progress className="progress progress-success" value="40" max="100" />
-            <p className="font-semibold">80/120</p>
-          </div>
-        )}
-      </div>
-    </div>
+    <PlaceHolderNftCard />
   ) : (
-    <div className="card bg-base-100 flex-1 shadow-sm">
-      <div className="relative h-60 w-full rounded-t-md skeleton" />
-      <div className="card-body gap-3">
-        <div className="skeleton h-8 w-full" />
+    (selectedRarity === "all" || selectedRarity.toLowerCase() === nftPreview?.attributes[0].value.toLowerCase()) && (
+      <div className="card bg-base-100 flex-1 shadow-sm">
+        {nftPreview?.image !== undefined ? (
+          <div className="relative h-60 w-full rounded-t-md">
+            <Image src={nftPreview.image} alt={nftPreview.name} fill={true} />
+          </div>
+        ) : (
+          <div className="skeleton w-full h-full rounded-b-none" />
+        )}
+        <div className="card-body">
+          <h2 className="card-title">{data.tokenId.toString()}</h2>
+          <p>{nftPreview?.description}</p>
 
-        <div className="skeleton h-8 w-full" />
-        <div className="skeleton h-8 w-full" />
+          {revealNFT !== undefined && revealNFT && (
+            <div className="flex items-center justify-center gap-5 px-2">
+              <progress className="progress progress-success" value="40" max="100" />
+              <p className="font-semibold">80/120</p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    )
   );
 };
 

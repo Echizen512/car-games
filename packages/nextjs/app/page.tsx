@@ -60,13 +60,9 @@ const Home: NextPage = () => {
       </button>
 
       <section className="grid grid-cols-4 p-5 gap-2">
-        {selectedRarity.toLocaleLowerCase() === rarityTypes[0].toLowerCase() && (
-          <>
-            {userNFTs?.map((data, key) => (
-              <NftCard key={key} data={data} revealNFT={revealNFT} selectedRarity={selectedRarity} />
-            ))}
-          </>
-        )}
+        {userNFTs?.map((data, key) => (
+          <NftCard key={key} data={data} revealNFT={revealNFT} selectedRarity={selectedRarity} />
+        ))}
       </section>
 
       {/* <div className="grow bg-base-300 w-full mt-12 px-8 py-12"> */}

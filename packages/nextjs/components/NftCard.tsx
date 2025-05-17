@@ -36,6 +36,8 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
     }
   };
 
+  console.log(nftPreview?.attributes.slice(1));
+
   //effects
   useEffect(() => {
     const getData = async () => {
@@ -67,8 +69,8 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
     (selectedRarity === "all" || selectedRarity.toLowerCase() === nftPreview?.attributes[0].value.toLowerCase()) && (
       <div className="card bg-base-100 flex-1 shadow-sm">
         {nftPreview?.image !== undefined ? (
-          <div className="relative h-60 w-full rounded-t-md">
-            <Image src={nftPreview.image} alt={nftPreview.name} fill={true} />
+          <div className="relative h-64 w-full">
+            <Image src={nftPreview.image} alt={nftPreview.name} fill={true} className="rounded-t-lg" />
           </div>
         ) : (
           <div className="skeleton w-full h-full rounded-b-none" />
@@ -77,12 +79,18 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
           <h2 className="card-title">{data.tokenId.toString()}</h2>
           <p>{nftPreview?.description}</p>
 
-          {revealNFT !== undefined && revealNFT && (
-            <div className="flex items-center justify-center gap-5 px-2">
-              <progress className="progress progress-success" value="40" max="100" />
-              <p className="font-semibold">80/120</p>
-            </div>
-          )}
+          {revealNFT !== undefined &&
+            revealNFT &&
+            nftPreview?.attributes.slice(1).map((x, y) => (
+              <div key={y} className="flex flex-col">
+                <span className="font-semibold">{x.trait_type.toString()}</span>
+
+                <div className="flex items-center justify-center gap-5">
+                  <progress className="progress progress-success" value={x.value} max="100" />
+                  <span className="font-semibold">{x.value}/100</span>
+                </div>
+              </div>
+            ))}
         </div>
       </div>
     )

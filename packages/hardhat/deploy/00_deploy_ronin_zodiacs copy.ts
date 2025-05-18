@@ -25,7 +25,7 @@ const deployRoninZodiacs: DeployFunction = async function (hre: HardhatRuntimeEn
   await deploy("RoninZodiacs", {
     from: deployer,
     // Contract constructor arguments
-    args: ["0xa76e496B1b345ED5063e004fa7094283E67b3855"],
+    args: ["0x6aD90bB24ed985F3876aDE9AE09381b1Cd180548"],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.

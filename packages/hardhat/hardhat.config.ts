@@ -135,6 +135,10 @@ const config: HardhatUserConfig = {
         },
       },
     },
+    saigon: {
+      url: "https://saigon-testnet.roninchain.com/rpc",
+      accounts: [deployerPrivateKey],
+    },
     scrollSepolia: {
       url: "https://sepolia-rpc.scroll.io",
       accounts: [deployerPrivateKey],

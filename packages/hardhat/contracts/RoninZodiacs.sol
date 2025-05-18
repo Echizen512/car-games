@@ -17,7 +17,7 @@ contract RoninZodiacs is ERC721, ERC721Pausable, Ownable {
     }
 
     //states
-    uint256 private _limitToken = 1; //poner esto en constructor
+    uint256 private _limitToken = 20; //poner esto en constructor
     uint256 private _uriId;
     string private _undisclosedUri = "ipfs://QmXzT3LSSnAuTtF46nWAr8mtBJguaxwK3DWb54RY9EXdmj";
     mapping(uint256 => string) private _tokenUriMap;
@@ -26,6 +26,9 @@ contract RoninZodiacs is ERC721, ERC721Pausable, Ownable {
     //public states
     uint256 public nextTokenId;
     bool public reveal;
+
+    //events
+    event metaDataUpdate(bool revealed);
 
     constructor(address initialOwner) ERC721("RoninZodiacs", "RZK") Ownable(initialOwner) {}
 
@@ -53,6 +56,7 @@ contract RoninZodiacs is ERC721, ERC721Pausable, Ownable {
     function disclose() public onlyOwner {
         require(!reveal, "NFTs have already been disclosed");
         reveal = true;
+        emit metaDataUpdate(reveal);
     }
 
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {

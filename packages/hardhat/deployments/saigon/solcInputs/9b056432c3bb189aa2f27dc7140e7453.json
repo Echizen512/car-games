@@ -1,0 +1,36 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/Finance.sol": {
+      "content": "// SPDX-License-Identifier: MIT\r\npragma solidity >=0.8.0;\r\n\r\ncontract Finance {\r\n    address public owner; // Fixed owner\r\n    mapping(address => uint256) public balances; // Players' earnings\r\n    mapping(address => uint256) public lastBetTime; // Betting time record\r\n\r\n    event BetPlaced(address indexed player, uint256 amount);\r\n    event Payout(address indexed player, uint256 amount);\r\n    event Withdrawal(address indexed player, uint256 amount, uint256 penalty);\r\n\r\n    constructor() {\r\n        owner = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4; // Change this to the owner's address\r\n    }\r\n\r\n    function placeBet() external payable {\r\n        require(msg.value >= 5, \"You must bet at least 5 units\"); // Enforcing minimum bet\r\n        balances[msg.sender] += msg.value;\r\n        lastBetTime[msg.sender] = block.timestamp; // Store betting time\r\n\r\n        emit BetPlaced(msg.sender, msg.value);\r\n    }\r\n\r\n    function resolveRace(address player, uint8 position) external {\r\n        uint256 betAmount = balances[player]; // Amount bet by the player\r\n\r\n        if (position == 1) {\r\n            balances[player] += (betAmount * 110) / 100; // Winner gets a 10% bonus\r\n        } else if (position == 2) {\r\n            balances[player] += betAmount; // Second place keeps their bet amount\r\n        } else if (position == 3) {\r\n            uint256 loss = betAmount / 2;\r\n            balances[player] += betAmount - loss; // Third place loses 50% of their bet\r\n            balances[owner] += loss; // The owner receives the lost amount\r\n        } else {\r\n            balances[owner] += betAmount; // Other positions lose their full bet to the owner\r\n        }\r\n\r\n        emit Payout(player, balances[player]);\r\n    }\r\n\r\n    function withdrawEarnings() external {\r\n        uint256 amount = balances[msg.sender];\r\n        require(amount > 0, \"No earnings available for withdrawal\");\r\n\r\n        uint256 timeElapsed = block.timestamp - lastBetTime[msg.sender];\r\n        uint256 penalty = 0;\r\n\r\n        // Withdrawal penalty system based on time elapsed\r\n        if (timeElapsed < 24 hours) {\r\n            penalty = (amount * 50) / 100; // 50%\r\n        } else if (timeElapsed < 48 hours) {\r\n            penalty = (amount * 30) / 100; // 30%\r\n        } else if (timeElapsed < 72 hours) {\r\n            penalty = (amount * 20) / 100; // 20%\r\n        } else {\r\n            penalty = (amount * 5) / 100; // 5%\r\n        }\r\n\r\n        uint256 finalAmount = amount - penalty;\r\n        balances[msg.sender] = 0;\r\n        balances[owner] += penalty; // The owner receives the penalty amount\r\n\r\n        payable(msg.sender).transfer(finalAmount);\r\n\r\n        emit Withdrawal(msg.sender, finalAmount, penalty);\r\n    }\r\n}\r\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "paris",
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}

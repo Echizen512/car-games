@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import StatBar from './StatBar';
 import ParticleBackground from './ParticleBackground';
 import VirtualRace from './VirtualRace';
-import { Car } from '../types';
+import { Car } from '../app/types';
 
 interface CarCardProps {
   car: Car;

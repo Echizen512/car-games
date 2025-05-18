@@ -23,6 +23,13 @@ const Home: NextPage = () => {
     args: [address],
   });
 
+const { data: userBalance } = useScaffoldReadContract({
+  contractName: "Finance",
+  functionName: "balances",
+  args: [address], 
+});
+
+
   const { data: revealNFT } = useScaffoldReadContract({
     contractName: "RoninZodiacs",
     functionName: "reveal",
@@ -58,6 +65,10 @@ const Home: NextPage = () => {
       >
         Disclose All NFT
       </button>
+
+ <article className="flex gap-5 mt-2 w-full justify-center">
+          <h2 className="text-xl font-bold">Your Balance: {userBalance ? `${userBalance.toString()} Ronin` : "0 (RON)"}</h2>
+      </article>
 
       <section className="grid grid-cols-4 p-5 gap-2">
         {userNFTs?.map((data, key) => (

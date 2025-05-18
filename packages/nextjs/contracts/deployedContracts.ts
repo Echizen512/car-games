@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   2021: {
     Finance: {
-      address: "0x9179669651D2963797bb564398602097B9689766",
+      address: "0xb3cb0E2c3A41422b94df270CAE5E80527fAe4D7e",
       abi: [
         {
           inputs: [],
@@ -164,7 +164,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     RoninZodiacs: {
-      address: "0x4aC81ecB32031195B0a054AEE7A75E39d6Cf73E0",
+      address: "0x52ffeD3eC2A8BBBd3e2Fb3E2fF358cfc34a96C12",
       abi: [
         {
           inputs: [

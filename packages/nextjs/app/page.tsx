@@ -8,7 +8,7 @@ import { useAccount } from "wagmi";
 import NftCard from "~~/components/NftCard";
 // import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 // import { Address } from "~~/components/scaffold-eth";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useScaffoldContract, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 const Home: NextPage = () => {
   const { address } = useAccount();
@@ -23,19 +23,41 @@ const Home: NextPage = () => {
     args: [address],
   });
 
-const { data: userBalance } = useScaffoldReadContract({
-  contractName: "Finance",
-  functionName: "balances",
-  args: [address], 
-});
-
+  const { data: userBalance } = useScaffoldReadContract({
+    contractName: "Finance",
+    functionName: "balances",
+    args: [address],
+  });
 
   const { data: revealNFT } = useScaffoldReadContract({
     contractName: "RoninZodiacs",
     functionName: "reveal",
   });
 
+  const { data: maxNftID } = useScaffoldReadContract({
+    contractName: "RoninZodiacs",
+    functionName: "nextTokenId",
+  });
+
+  const { data: zodiacContract } = useScaffoldContract({ contractName: "RoninZodiacs" });
+
+  //write smart
   const { writeContractAsync: writeRoninZodiacsAsync } = useScaffoldWriteContract({ contractName: "RoninZodiacs" });
+
+  //functions
+  const updateOpenSeaMetaData = async () => {
+    if (maxNftID === undefined) return;
+    for (let i = 0; i < maxNftID; i++) {
+      const req = await fetch(
+        `https://testnets-api.opensea.io/api/v2/chain/saigon_testnet/contract/${zodiacContract?.address}/nfts/${i}/refresh`,
+        { method: "POST" },
+      );
+
+      const res = await req.json();
+
+      console.log(res);
+    }
+  };
 
   return (
     <section className="flex flex-col w-full h-full">
@@ -58,16 +80,21 @@ const { data: userBalance } = useScaffoldReadContract({
             await writeRoninZodiacsAsync({
               functionName: "disclose",
             });
+
+            await updateOpenSeaMetaData();
           } catch (err) {
             console.log(err);
           }
         }}
+        // disabled={revealNFT}
       >
         Disclose All NFT
       </button>
 
- <article className="flex gap-5 mt-2 w-full justify-center">
-          <h2 className="text-xl font-bold">Your Balance: {userBalance ? `${userBalance.toString()} Ronin` : "0 (RON)"}</h2>
+      <article className="flex gap-5 mt-2 w-full justify-center">
+        <h2 className="text-xl font-bold">
+          Your Balance: {userBalance ? `${userBalance.toString()} Ronin` : "0 (RON)"}
+        </h2>
       </article>
 
       <section className="grid grid-cols-4 p-5 gap-2">

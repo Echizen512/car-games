@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 interface Particle {
   x: number;
@@ -17,23 +17,23 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ rarity }) => {
 
   const getParticleColor = (rarity: string) => {
     switch (rarity.toLowerCase()) {
-      case 'común':
-      case 'common':
-        return '#3B82F6'; // blue
-      case 'poco común':
-      case 'uncommon':
-        return '#22C55E'; // green
-      case 'raro':
-      case 'rare':
-        return '#A855F7'; // purple
-      case 'épico':
-      case 'epic':
-        return '#F97316'; // orange
-      case 'legendario':
-      case 'legendary':
-        return '#EAB308'; // yellow
+      case "común":
+      case "common":
+        return "#3B82F6"; // blue
+      case "poco común":
+      case "uncommon":
+        return "#22C55E"; // green
+      case "raro":
+      case "rare":
+        return "#A855F7"; // purple
+      case "épico":
+      case "epic":
+        return "#F97316"; // orange
+      case "legendario":
+      case "legendary":
+        return "#EAB308"; // yellow
       default:
-        return '#6B7280'; // gray
+        return "#6B7280"; // gray
     }
   };
 
@@ -41,10 +41,10 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ rarity }) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let particles: Particle[] = [];
+    const particles: Particle[] = [];
     const particleCount = 50;
     const color = getParticleColor(rarity);
 
@@ -54,7 +54,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ rarity }) => {
       canvas.height = canvas.offsetHeight;
     };
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener("resize", resizeCanvas);
 
     // Create particles
     for (let i = 0; i < particleCount; i++) {
@@ -70,7 +70,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ rarity }) => {
     // Animation loop
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       particles.forEach(particle => {
         particle.x += particle.speedX;
         particle.y += particle.speedY;
@@ -93,16 +93,11 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ rarity }) => {
     animate();
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener("resize", resizeCanvas);
     };
   }, [rarity]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-30"
-    />
-  );
+  return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-30" />;
 };
 
 export default ParticleBackground;

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import ParticleBackground from "./ParticleBackground";
 import PlaceHolderNftCard from "./PlaceHolderNftCard";
+// import VirtualRace from "./VirtualRace";
 import { NextPage } from "next";
 import { INftPreview } from "~~/types/nft-data";
-import ParticleBackground from "./ParticleBackground";
-import VirtualRace from "./VirtualRace";
 
 type NftCardProps = {
   data: {
@@ -21,12 +21,12 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
   const [isHovered, setIsHovered] = useState(false);
   const [showRace, setShowRace] = useState(false);
 
-  const commonCarConfigs = [
-    { speed: 45, handling: 45, grip: 20, acceleration: 10 },
-    { speed: 15, handling: 25, grip: 40, acceleration: 40 },
-    { speed: 10, handling: 50, grip: 10, acceleration: 50 },
-    { speed: 30, handling: 30, grip: 30, acceleration: 30 },
-  ];
+  // const commonCarConfigs = [
+  //   { speed: 45, handling: 45, grip: 20, acceleration: 10 },
+  //   { speed: 15, handling: 25, grip: 40, acceleration: 40 },
+  //   { speed: 10, handling: 50, grip: 10, acceleration: 50 },
+  //   { speed: 30, handling: 30, grip: 30, acceleration: 30 },
+  // ];
 
   const getPreviewNft = async (tokenUri: string) => {
     try {
@@ -53,29 +53,28 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
   }, [data.tokenURI]);
 
   return !revealNFT ? (
-    <div className="card bg-white flex-1 shadow-sm rounded-xl overflow-hidden">
+    <div className="card flex-1 bg-base-300 text-base-content shadow-sm rounded-xl overflow-hidden">
       <div
-        className="relative h-64 w-full bg-white rounded-t-lg"
+        className="relative h-64 w-full rounded-t-lg"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {isHovered && nftPreview?.attributes && <ParticleBackground rarity={nftPreview.attributes[0]?.value} />}
         {nftPreview?.image ? (
-          <Image src={nftPreview.image} alt={nftPreview.name} fill={true} className="object-contain p-4" />
+          <Image src={nftPreview.image} alt={nftPreview.name} fill={true} className="object-contain p-4 bg-white" />
         ) : (
           <div className="skeleton w-full h-full rounded-b-none" />
         )}
       </div>
       <div className="card-body p-5">
-        <h2 className="card-title text-center text-lg font-bold">{data.tokenId.toString()}</h2>
-        <p className="text-gray-600">{nftPreview?.description}</p>
+        <h2 className=" text-center text-lg font-bold">{data.tokenId.toString()}</h2>
+        {/* <p>{nftPreview?.description}</p> */}
       </div>
     </div>
   ) : loadData ? (
     <PlaceHolderNftCard />
   ) : (
     (selectedRarity === "all" || selectedRarity.toLowerCase() === nftPreview?.attributes[0]?.value.toLowerCase()) && (
-      <div className="card bg-primary flex-1 shadow-sm rounded-xl overflow-hidden">
+      <div className="card bg-base-300 flex-1 shadow-sm rounded-xl overflow-hidden">
         <div
           className="relative h-64 w-full bg-white rounded-t-lg"
           onMouseEnter={() => setIsHovered(true)}
@@ -120,7 +119,5 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
 };
 
 export default NftCard;
-
-
 
 // QmYMeFEEi5ADFNsFGxdTCCS1ohEbK122u48X9FF7q4MQ16

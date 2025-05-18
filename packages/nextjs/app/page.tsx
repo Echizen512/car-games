@@ -48,14 +48,10 @@ const Home: NextPage = () => {
   const updateOpenSeaMetaData = async () => {
     if (maxNftID === undefined) return;
     for (let i = 0; i < maxNftID; i++) {
-      const req = await fetch(
+      await fetch(
         `https://testnets-api.opensea.io/api/v2/chain/saigon_testnet/contract/${zodiacContract?.address}/nfts/${i}/refresh`,
         { method: "POST" },
       );
-
-      const res = await req.json();
-
-      console.log(res);
     }
   };
 

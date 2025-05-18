@@ -66,7 +66,7 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
         )}
       </div>
       <div className="card-body p-5">
-        <h2 className=" text-center text-lg font-bold">{data.tokenId.toString()}</h2>
+        <h2 className=" text-center text-lg font-bold">{nftPreview?.name.toString()}</h2>
         {/* <p>{nftPreview?.description}</p> */}
       </div>
     </div>
@@ -88,8 +88,9 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
           )}
         </div>
         <div className="card-body p-5">
-          <h2 className="card-title text-center text-lg font-bold">{data.tokenId.toString()}</h2>
-          <p className="text-white">{nftPreview?.description}</p>
+          <h2 className=" text-center text-lg font-bold">{nftPreview?.name.toString()}</h2>
+
+          {/* <p className="text-white">{nftPreview?.description}</p> */}
 
           {nftPreview?.attributes?.slice(1).map((x, y) => (
             <div key={y} className="flex flex-col">
@@ -119,5 +120,3 @@ const NftCard: NextPage<NftCardProps> = ({ data, revealNFT, selectedRarity }) =>
 };
 
 export default NftCard;
-
-// QmYMeFEEi5ADFNsFGxdTCCS1ohEbK122u48X9FF7q4MQ16

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Finance {
-    address public owner; // Fixed owner
+contract Finance is Ownable {
     mapping(address => uint256) public balances; // Players' earnings
     mapping(address => uint256) public lastBetTime; // Betting time record
 
@@ -10,9 +10,7 @@ contract Finance {
     event Payout(address indexed player, uint256 amount);
     event Withdrawal(address indexed player, uint256 amount, uint256 penalty);
 
-    constructor() {
-        owner = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4; // Change this to the owner's address
-    }
+    constructor(address initialOwner) Ownable(initialOwner) {}
 
     function placeBet() external payable {
         require(msg.value >= 5, "You must bet at least 5 units"); // Enforcing minimum bet
@@ -32,7 +30,7 @@ contract Finance {
         } else if (position == 3) {
             uint256 loss = betAmount / 2;
             balances[player] += betAmount - loss; // Third place loses 50% of their bet
-            balances[owner] += loss; // The owner receives the lost amount
+            balances[owner()] += loss; // The owner r()eceives the lost amount
         } else {
             balances[owner] += betAmount; // Other positions lose their full bet to the owner
         }
@@ -53,9 +51,7 @@ contract Finance {
         } else if (timeElapsed < 48 hours) {
             penalty = (amount * 30) / 100; // 30%
         } else if (timeElapsed < 72 hours) {
-            penalty = (amount * 20) / 100; // 20%
-        } else {
-            penalty = (amount * 5) / 100; // 5%
+            penalty = (amount * 5) / 100; // 20%
         }
 
         uint256 finalAmount = amount - penalty;

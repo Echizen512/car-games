@@ -42,8 +42,11 @@ const Presentation: NextPage = () => {
               }}
               className="flex flex-col gap-5 justify-center items-center mb-24 pointer-events-auto"
             >
-              <h1 className="text-6xl font-semibold">Ronin Zodiacs</h1>
-              <h3>Connect your wallet just now!</h3>
+              <h1 className="text-6xl font-semibold">Ronken Ships</h1>
+              <span className="w-4/12 text-center">
+                Get ready for battle on the high seas. Face the challenge, claim your place and win great rewards in
+                $RKS.
+              </span>
 
               <RainbowKitCustomConnectButton />
             </motion.article>
@@ -105,15 +108,23 @@ const Presentation: NextPage = () => {
             </div>
           </motion.section>
 
+          {/* Title  */}
           <section className="mt-12">
             <h3 className="text-center text-3xl font-semibold">What is Ronin Zodiacs?</h3>
-            <div className="text-center mb-12">
+            <div className="text-center mb-12 lg:w-6/12 mx-auto">
               <img src="/ronin.png" alt="NFT Racing Logo" className="mx-auto mb-4 w-20 h-auto" />
               <p className="text-lg">
                 🚀 Ronin Zodiacs is a competitive game where your NFTs come to life in a fierce race against 3 virtual
                 machines. With different rarities, strategic fuel consumption, and a reward system with optimized
                 tokenomics, each race will push you to the limit.
               </p>
+
+              <span>
+                For more details on the economics of the game and our long-term vision, see our white paper &nbsp;
+                <a href="https://ronkeships.gitbook.io/ronkeships-whitepaper" className="link-info">
+                  here
+                </a>
+              </span>
             </div>
 
             <div className="flex gap-6 justify-center mb-4">

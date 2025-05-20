@@ -22,11 +22,6 @@ export const menuLinks: HeaderMenuLink[] = [
     icon: <PhotoIcon className="h-4 w-4" />,
   },
   {
-    label: "Buy NFT",
-    href: "/buy-nft",
-    icon: <BuildingLibraryIcon className="h-4 w-4" />,
-  },
-  {
     label: "Configuration",
     href: "/configuration",
     icon: <Cog6ToothIcon className="h-4 w-4" />,

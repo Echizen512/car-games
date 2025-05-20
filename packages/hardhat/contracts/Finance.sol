@@ -30,9 +30,9 @@ contract Finance is Ownable {
         } else if (position == 3) {
             uint256 loss = betAmount / 2;
             balances[player] += betAmount - loss; // Third place loses 50% of their bet
-            balances[owner()] += loss; // The owner r()eceives the lost amount
+            balances[owner()] += loss; // The owner receives the lost amount
         } else {
-            balances[owner] += betAmount; // Other positions lose their full bet to the owner
+            balances[owner()] += betAmount; // Other positions lose their full bet to the owner
         }
 
         emit Payout(player, balances[player]);
@@ -56,7 +56,7 @@ contract Finance is Ownable {
 
         uint256 finalAmount = amount - penalty;
         balances[msg.sender] = 0;
-        balances[owner] += penalty; // The owner receives the penalty amount
+        balances[owner()] += penalty; // The owner receives the penalty amount
 
         payable(msg.sender).transfer(finalAmount);
 

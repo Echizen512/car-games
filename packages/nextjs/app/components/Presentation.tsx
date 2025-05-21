@@ -48,7 +48,9 @@ const Presentation: NextPage = () => {
                 $RKS.
               </span>
 
-              <RainbowKitCustomConnectButton />
+              <div className="scale-125">
+                <RainbowKitCustomConnectButton />
+              </div>
             </motion.article>
 
             {/* cars */}

@@ -35,20 +35,6 @@ interface VirtualRaceProps {
   onClose: () => void;
 }
 
-const ship: Ship = {
-  id: "98",
-  name: "Storm Chaser",
-  type: "Race Ship",
-  image: "/ship.png",
-  stats: {
-    oil: 95,
-    power: 90,
-    speed: 85,
-    handling: 80,
-    stormStability: 100,
-  },
-};
-
 const styles = `
   @keyframes flipReplace {
     0% { transform: perspective(500px) rotateX(0deg); opacity: 1; }
@@ -90,13 +76,6 @@ const getStatsByCategory = (category: string) => {
   }
 };
 
-const availableOpponents = selectedConfig.map((category, index) => ({
-  id: `opponent${index + 1}`,
-  name: `Mystery Racer ${index + 1}`,
-  position: index + 1,
-  stats: getStatsByCategory(category),
-}));
-
 const opponents = (ship: Ship) => [
   {
     id: ship.id,
@@ -114,6 +93,32 @@ const opponents = (ship: Ship) => [
   ...availableOpponents,
 ];
 
+const opponentNames = ["Falcon Fury", "Neon Phantom", "Shadow Blade", "Cosmic Titan"];
+
+const getImageByCategory = (category: string) => {
+  switch (category) {
+    case "Common":
+      return "/NFT.png";
+    case "Uncommon":
+      return "/NFT2.png";
+    case "Rare":
+      return "/NFT3.png";
+    case "Epic":
+      return "/NFT4.png";
+    default:
+      return "/NFT5.png";
+  }
+};
+
+const availableOpponents = selectedConfig.map((category, index) => ({
+  id: `opponent${index + 1}`,
+  name: opponentNames[index % opponentNames.length], 
+  position: index + 1,
+  image: getImageByCategory(category), 
+  stats: getStatsByCategory(category),
+}));
+
+
 const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
   //states
   const [positions, setPositions] = useState<RacerPosition[]>([]);
@@ -130,12 +135,13 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
   const [playbackRate, setPlaybackRate] = useState(1);
   const shipSize = 200;
 
-  useEffect(() => {
-    if (ship) {
-      console.log("Ship en VirtualRace:", ship);
-      setPositions(opponents(ship));
-    }
-  }, [ship]);
+useEffect(() => {
+  if (ship) {
+    console.log("NFT seleccionado en VirtualRace:", ship);
+    setPositions(opponents(ship));
+  }
+}, [ship]);
+
 
   useEffect(() => {
     setPositions(opponents(ship));

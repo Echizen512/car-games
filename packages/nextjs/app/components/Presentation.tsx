@@ -56,46 +56,46 @@ const Presentation: NextPage = () => {
             {/* cars */}
             <div className="flex justify-center top-14">
               <motion.img
-                initial={{ x: 800 }}
-                animate={{ x: 0 }}
+                initial={{ x: -800 }}
+                animate={{ x: 0, y: 20 }}
                 transition={{
                   duration: 8,
                   delay: 0.0,
                   ease: "easeInOut",
                 }}
-                src="https://i.seadn.io/s/raw/files/cdb5b18209009ac660230e86f8bea7df.png?auto=format&dpr=1&w=1920"
-                alt="car blue"
+                src="/NFT.png"
+                alt="ship"
                 className=" w-36 h-36 mx-12"
               />
 
               <motion.img
-                initial={{ x: 800 }}
+                initial={{ x: -800 }}
                 animate={{ x: 0 }}
                 transition={{
                   duration: 8,
                   delay: 0.2,
                   ease: "easeInOut",
                 }}
-                src="https://i.seadn.io/s/raw/files/5b09658aed66253886ec4697a462b025.png?auto=format&dpr=1&w=1920"
-                alt="car blue"
+                src="NFT2.png"
+                alt="ship"
                 className=" w-36 h-36 mx-12"
               />
               <motion.img
-                initial={{ x: 800 }}
+                initial={{ x: -800 }}
                 animate={{ x: 0 }}
                 transition={{
                   duration: 8,
                   delay: 0.4,
                   ease: "easeInOut",
                 }}
-                src="https://i.seadn.io/s/raw/files/191b602f782fd7362af9e508a2805f5a.png?auto=format&dpr=1&w=1920"
-                alt="car blue"
+                src="NFT3.png"
+                alt="ship"
                 className=" w-36 h-36 mx-12"
               />
             </div>
 
             {/* Wave */}
-            <Image src="/wave-haikei.png" width={1000} height={500} alt="wave" className="w-full h-40 absolute" />
+            <Image src="/wave-haikei.png" width={1000} height={500} alt="wave" className="w-full h-48 absolute" />
 
             <div className="w-full h-32 relative z-10">
               <div className="w-full absolute bottom-0 flex justify-center items-center z-0">
@@ -115,10 +115,8 @@ const Presentation: NextPage = () => {
             <h3 className="text-center text-3xl font-semibold">What is Ronken Ships?</h3>
             <div className="text-center mb-12 lg:w-6/12 mx-auto">
               <img src="/ronin.png" alt="NFT Racing Logo" className="mx-auto mb-4 w-20 h-auto" />
-              <p className="text-lg">
-                🚀 Ronin Zodiacs is a competitive game where your NFTs come to life in a fierce race against 3 virtual
-                machines. With different rarities, strategic fuel consumption, and a reward system with optimized
-                tokenomics, each race will push you to the limit.
+              <p className="text-lg text-justify">
+                Ronken Ships is an NFT-powered racing game where your ship competes against three virtual rivals. With fuel strategy, rare ships, and token rewards, speed is key to victory! 🚢🏆
               </p>
 
               <span>
@@ -136,8 +134,7 @@ const Presentation: NextPage = () => {
                 <div className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Game Mode 🎮</h2>
                   <p className="text-justify">
-                    🏎️ In each match, you will compete against 3 virtual machines, ensuring a total of 4 racers on the
-                    competition leaderboard. 🏆 The top 3 places will receive token rewards:
+                    🚢 In each race, you’ll face off against three virtual opponents, making a total of four contenders battling for victory. 🏆 The top three finishers will earn valuable token rewards, so strategy and speed are key to securing your place on the leaderboard!
                   </p>
                   <ul className="list-disc pl-5">
                     <li className="mb-3">

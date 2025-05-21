@@ -17,6 +17,7 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
   const [loadData, setLoadData] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState(false);
   const [showRace, setShowRace] = useState(false);
+  const [selectedShip, setSelectedShip] = useState<any | null>(null);
 
   //functions
   const getPreviewNft = useCallback(async () => {
@@ -24,7 +25,6 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
       setLoadData(true);
       const req = await fetch(data.metadata_url);
       const res: INftPreview = await req.json();
-
       setNftPreview(res);
     } catch (err) {
       console.error(err);
@@ -38,7 +38,26 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
     getPreviewNft();
   }, [getPreviewNft]);
 
-  //Card Components
+  // Transforma los datos del NFT para que coincidan con la estructura de VirtualRace
+  const prepareShipData = () => {
+    if (!nftPreview) return null;
+
+    return {
+      id: data.identifier,
+      name: nftPreview.name,
+      type: "NFT Ship",
+      image: data.image_url,
+      stats: {
+        oil: nftPreview.attributes.find(attr => attr.trait_type === "oil")?.value || 50,
+        power: nftPreview.attributes.find(attr => attr.trait_type === "power")?.value || 50,
+        speed: nftPreview.attributes.find(attr => attr.trait_type === "speed")?.value || 50,
+        handling: nftPreview.attributes.find(attr => attr.trait_type === "handling")?.value || 50,
+        stormStability: nftPreview.attributes.find(attr => attr.trait_type === "storm_stability")?.value || 50,
+      },
+    };
+  };
+
+  // Card Components
   const NftCardAttributes = (x: INftAttribute, y: number) => {
     const oilLimit = 75;
     const allStaticsLimit = 80;
@@ -107,7 +126,7 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
 
   return (
     <>
-      {showRace && nftPreview && <VirtualRace ship={nftPreview} onClose={() => setShowRace(false)} />}
+      {showRace && selectedShip && <VirtualRace ship={selectedShip} onClose={() => setShowRace(false)} />}
 
       {loadData ? (
         <div className="card bg-primary flex-1 shadow-sm rounded-xl h-50 p-5 gap-2 justify-center items-center">
@@ -116,7 +135,7 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
         </div>
       ) : nftPreview === null ? (
         <div className="card bg-secondary flex-1 shadow-sm rounded-xl h-50 p-5 gap-2 justify-center items-center">
-          <h3 className="font-semibold text-md text-center">check your internet connection and try again.</h3>
+          <h3 className="font-semibold text-md text-center">Check your internet connection and try again.</h3>
           <button className="btn btn-primary" onClick={getPreviewNft}>
             <ArrowPathIcon className="w-4 h-4" /> Reload
           </button>
@@ -134,7 +153,13 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
               {nftPreview?.attributes?.slice(1).map((x, y) => NftCardAttributes(x, y))}
 
               <div className="grid grid-cols-2 gap-3 mt-5">
-                <button onClick={() => setShowRace(true)} className="btn btn-primary py-2 rounded-md font-medium">
+                <button
+                  onClick={() => {
+                    setSelectedShip(prepareShipData());
+                    setShowRace(true);
+                  }}
+                  className="btn btn-primary py-2 rounded-md font-medium"
+                >
                   Start Virtual Race
                 </button>
                 <button className="btn btn-withdraw py-2 rounded-md font-medium">Claim Reward</button>

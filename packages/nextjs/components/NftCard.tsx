@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import ParticleBackground from "./ParticleBackground";
-import PlaceHolderNftCard from "./PlaceHolderNftCard";
 import VirtualRace from "./VirtualRace";
 import { NextPage } from "next";
 import { INftAttribute, INftDataSea, INftPreview } from "~~/types/nftData.entity";
@@ -52,8 +51,37 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
     );
   };
 
+  const BadgeRarityCard = () => {
+    let bgRarity: string = "bg-gray-800";
+
+    switch (nftPreview?.attributes[0].value) {
+      case "common":
+        bgRarity = "bg-gray-600";
+        break;
+      case "uncommon":
+        bgRarity = "bg-green-600";
+        break;
+      case "rare":
+        bgRarity = "bg-purple-600";
+        break;
+      case "epic":
+        bgRarity = "bg-orange-500";
+        break;
+    }
+
+    return (
+      <div className="mx-auto my-5">
+        <div className={`${bgRarity} text-white badge font-semibold p-4 rounded-full`}>
+          {nftPreview?.attributes[0]?.value}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
+      {showRace && nftPreview && <VirtualRace ship={nftPreview} onClose={() => setShowRace(false)} />}
+
       {loadData ? (
         <div className="card bg-primary flex-1 shadow-sm rounded-xl h-50 p-5 gap-2 justify-center items-center">
           <span className="loading loading-spinner loading-xl" />
@@ -64,7 +92,7 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
           selectedRarity.toLowerCase() === nftPreview?.attributes[0]?.value.toLowerCase()) && (
           <div className="card bg-base-100 flex-1 shadow-sm rounded-xl overflow-hidden">
             <div
-              className="relative h-64 w-full bg-primary rounded-t-lg"
+              className="relative h-64 w-full bg-base-300 rounded-t-lg"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
@@ -75,23 +103,9 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
                 <div className="skeleton w-full h-full rounded-b-none" />
               )}
             </div>
+            {BadgeRarityCard()}
             <div className="card-body p-5">
               <div className="w-full flex flex-col items-center">
-                <div
-                  className={`px-4 py-1 rounded-md text-white text-center font-bold mt-2 mb-4 ${
-                    nftPreview?.attributes[0]?.value === "Common"
-                      ? "bg-gray-600"
-                      : nftPreview?.attributes[0]?.value === "Uncommon"
-                        ? "bg-green-600"
-                        : nftPreview?.attributes[0]?.value === "Rare"
-                          ? "bg-purple-600"
-                          : nftPreview?.attributes[0]?.value === "Epic"
-                            ? "bg-orange-500"
-                            : "bg-gray-800"
-                  }`}
-                >
-                  {nftPreview?.attributes[0]?.value}
-                </div>
                 <h2 className="card-title text-xl font-bold text-center">{nftPreview?.name}</h2>
               </div>
               {nftPreview?.attributes?.slice(1).map((x, y) => NftCardAttributes(x, y))}
@@ -106,7 +120,6 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
           </div>
         )
       )}
-      {/* {showRace && nftPreview && <VirtualRace ship={nftPreview} onClose={() => setShowRace(false)} />} */}
     </>
   );
 };

@@ -23,11 +23,8 @@ const Home: NextPage = () => {
       const req = await fetch(
         `https://testnets-api.opensea.io/api/v2/chain/sepolia/account/${address}/nfts?collection=fuerza-com`,
       );
-
       const res: INftDataSeaResponse = await req.json();
       setUserNfts(res.nfts);
-
-      console.log(res.nfts);
     } catch (err) {
       console.log(err);
     } finally {
@@ -43,18 +40,20 @@ const Home: NextPage = () => {
   return (
     <section className="flex flex-col w-full h-full">
       <article className="flex gap-5 mt-2 w-full justify-center">
-        {rarityTypes.map((x, y) => (
-          <button
-            key={y}
-            onClick={() => setSelectedRarity(x.toLowerCase())}
-            className={`${selectedRarity.toLowerCase() === x.toLowerCase() ? "btn-primary" : "btn-secondary"} btn w-28`}
-          >
-            {x}
-          </button>
-        ))}
+        <div className="p-4 mx-auto grid grid-cols-3 sm:flex gap-5 justify-center">
+          {rarityTypes.map((x, y) => (
+            <button
+              key={y}
+              onClick={() => setSelectedRarity(x.toLowerCase())}
+              className={`${selectedRarity.toLowerCase() === x.toLowerCase() ? "btn-primary" : "btn-secondary"} btn w-28`}
+            >
+              {x}
+            </button>
+          ))}
+        </div>
       </article>
 
-      <section className="grid grid-cols-4 p-5 gap-2">
+      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 gap-2">
         {loaderNft ? (
           <PlaceHolderNftCard />
         ) : (

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 
 interface Ship {
-  id: string | number;
+  id: string;
   name: string;
   type: string;
   image?: string;

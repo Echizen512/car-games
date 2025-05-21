@@ -40,9 +40,11 @@ const Presentation: NextPage = () => {
                 delay: 0.1,
                 ease: "easeInOut",
               }}
-              className="flex flex-col gap-5 justify-center items-center mb-24 pointer-events-auto"
+              className="flex flex-col gap-3 justify-center items-center mb-18 pointer-events-auto"
             >
+              <img src="/ronin.png" alt="NFT Racing Logo" className="mx-auto mt-2 w-20 h-auto" />
               <h1 className="text-6xl font-semibold">Ronken Ships</h1>
+              
               <span className="w-4/12 text-center">
                 Get ready for battle on the high seas. Face the challenge, claim your place and win great rewards in
                 $RKS.
@@ -95,7 +97,7 @@ const Presentation: NextPage = () => {
             </div>
 
             {/* Wave */}
-            <Image src="/wave-haikei.png" width={1000} height={500} alt="wave" className="w-full h-48 absolute" />
+            <Image src="/wave-haikei.png" width={1000} height={500} alt="wave" className="w-full h-40 absolute" />
 
             <div className="w-full h-32 relative z-10">
               <div className="w-full absolute bottom-0 flex justify-center items-center z-0">
@@ -114,7 +116,6 @@ const Presentation: NextPage = () => {
           <section className="mt-12">
             <h3 className="text-center text-3xl font-semibold">What is Ronken Ships?</h3>
             <div className="text-center mb-12 lg:w-6/12 mx-auto">
-              <img src="/ronin.png" alt="NFT Racing Logo" className="mx-auto mb-4 w-20 h-auto" />
               <p className="text-lg text-justify">
                 Ronken Ships is an NFT-powered racing game where your ship competes against three virtual rivals. With fuel strategy, rare ships, and token rewards, speed is key to victory! 🚢🏆
               </p>

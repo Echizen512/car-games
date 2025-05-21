@@ -280,8 +280,8 @@ useEffect(() => {
         />
       )}
       <div className="bg-white rounded-lg w-full max-w-4xl">
-        <div className="bg-white p-4 rounded-t-lg h-[500px] relative">
-          <div className="relative h-full flex items-center justify-center">
+        <div className="bg-white p-4 rounded-t-lg h-[500px] w-full relative">
+          <div className="relative h-full w-full flex items-center justify-center">
             {raceTime <= 0 && (
               <button
                 onClick={toggleShipVisibility}
@@ -293,7 +293,7 @@ useEffect(() => {
 
             <video
               ref={videoRef}
-              src="https://raw.githubusercontent.com/Luis901702/Mikucars/main/Comp%201_2.mp4"
+              src="/fondo.mp4"
               className="w-[695px] h-[495px] object-contain z-10 track"
               style={{ position: "absolute", zIndex: 10 }}
               preload="auto"
@@ -305,7 +305,7 @@ useEffect(() => {
               <img
                 src={ship.image || "https://via.placeholder.com/80?text=Ship"}
                 alt={ship.name}
-                className="absolute top-[20px] left-[300px] z-20 ship"
+                className="absolute top-[250px] left-[340px] z-20 ship"
                 style={{ width: `${shipSize}px`, height: `${shipSize}px`, zIndex: 20 }}
                 onError={e => (e.currentTarget.src = "https://via.placeholder.com/80?text=Ship+Error")}
               />

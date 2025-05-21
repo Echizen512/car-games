@@ -27,6 +27,8 @@ const Home: NextPage = () => {
       );
       const res: INftDataSeaResponse = await req.json();
       setUserNfts(res.nfts);
+
+      console.log(res);
     } catch (err) {
       console.log(err);
     } finally {
@@ -74,9 +76,11 @@ const Home: NextPage = () => {
         </AnimatePresence>
       ) : (
         <article className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 gap-2">
-          {userNfts.map((x, y) => (
-            <NftCard key={y} data={x} selectedRarity={selectedRarity} />
-          ))}
+          {userNfts
+            .sort((a: INftDataSea, b: INftDataSea) => parseInt(a.identifier) - parseInt(b.identifier))
+            .map((x, y) => (
+              <NftCard key={y} data={x} selectedRarity={selectedRarity} />
+            ))}
         </article>
       )}
     </section>

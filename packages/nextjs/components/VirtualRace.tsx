@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 
-
 //TODO: Music: Kiss of eath
 interface Ship {
   id: string;
@@ -116,6 +115,7 @@ const opponents = (ship: Ship) => [
 ];
 
 const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
+  //states
   const [positions, setPositions] = useState<RacerPosition[]>([]);
   const [countdown, setCountdown] = useState<string | number>("READY");
   const [isRacing, setIsRacing] = useState(false);

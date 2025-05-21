@@ -3,6 +3,7 @@ export interface INftDataSeaResponse {
 }
 
 export interface INftDataSea {
+  identifier: string;
   metadata_url: string;
   opensea_url: string;
   image_url: string;

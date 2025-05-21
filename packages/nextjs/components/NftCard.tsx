@@ -12,17 +12,19 @@ type NftCardProps = {
 };
 
 const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
+  //states
   const [nftPreview, setNftPreview] = useState<INftPreview | null>(null);
   const [loadData, setLoadData] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState(false);
   const [showRace, setShowRace] = useState(false);
 
+  //functions
   const getPreviewNft = useCallback(async () => {
     try {
+      setLoadData(true);
       const req = await fetch(data.metadata_url);
       const res: INftPreview = await req.json();
 
-      console.log(res);
       setNftPreview(res);
     } catch (err) {
       console.error(err);
@@ -31,6 +33,7 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
     }
   }, [data.metadata_url]);
 
+  //effects
   useEffect(() => {
     getPreviewNft();
   }, [getPreviewNft]);
@@ -50,6 +53,28 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
           </span>
         </div>
       </div>
+    );
+  };
+
+  const ImageContainerCard = () => {
+    return (
+      <article
+        className="relative h-64 w-full bg-base-300 rounded-t-lg"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {nftPreview !== null ? (
+          <>
+            <div className="absolute left-0 bg-gray-500 text-white badge font-semibold p-1 px-2 rounded-full m-1">
+              #{data.identifier}
+            </div>
+            {isHovered && nftPreview?.attributes && <ParticleBackground rarity={nftPreview.attributes[0]?.value} />}
+            <Image src={data.image_url} alt={nftPreview.name} fill={true} className="object-contain p-4" />
+          </>
+        ) : (
+          <div className="skeleton w-full h-full rounded-b-none" />
+        )}
+      </article>
     );
   };
 
@@ -100,18 +125,7 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
         (selectedRarity === "all" ||
           selectedRarity.toLowerCase() === nftPreview?.attributes[0]?.value.toLowerCase()) && (
           <div className="card bg-base-100 flex-1 shadow-sm rounded-xl overflow-hidden">
-            <div
-              className="relative h-64 w-full bg-base-300 rounded-t-lg"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              {isHovered && nftPreview?.attributes && <ParticleBackground rarity={nftPreview.attributes[0]?.value} />}
-              {nftPreview !== null ? (
-                <Image src={data.image_url} alt={nftPreview.name} fill={true} className="object-contain p-4" />
-              ) : (
-                <div className="skeleton w-full h-full rounded-b-none" />
-              )}
-            </div>
+            {ImageContainerCard()}
             {BadgeRarityCard()}
             <div className="card-body p-5">
               <div className="w-full flex flex-col items-center">

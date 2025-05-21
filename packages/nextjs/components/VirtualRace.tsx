@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 
 interface Ship {
-  id: string;
+  id: string | number;
   name: string;
   type: string;
   image?: string;
@@ -35,16 +35,16 @@ interface VirtualRaceProps {
 }
 
 const ship: Ship = {
-  id: "player_ship",
+  id: "98",
   name: "Storm Chaser",
   type: "Race Ship",
   image: "/ship.png",
   stats: {
-    oil: 90,
-    power: 85,
-    speed: 80,
-    handling: 70,
-    stormStability: 95,
+    oil: 95,
+    power: 90,
+    speed: 85,
+    handling: 80,
+    stormStability: 100,
   },
 };
 
@@ -116,10 +116,10 @@ const opponents = (ship: Ship) => [
 
 
 const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
+  const [positions, setPositions] = useState<RacerPosition[]>([]);
   const [countdown, setCountdown] = useState<string | number>("READY");
   const [isRacing, setIsRacing] = useState(false);
   const [raceTime, setRaceTime] = useState(30);
-  const [positions, setPositions] = useState<RacerPosition[]>([]);
   const [triggerAnimation, setTriggerAnimation] = useState(0);
   const [playerPosition, setPlayerPosition] = useState<string | null>(null);
   const [isShipVisible, setIsShipVisible] = useState(true);
@@ -130,6 +130,12 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
   const [playbackRate, setPlaybackRate] = useState(1);
   const shipSize = 200; 
 
+  useEffect(() => {
+    if (ship) {
+      console.log("Ship en VirtualRace:", ship);
+      setPositions(opponents(ship)); 
+    }
+  }, [ship]);
 
   useEffect(() => {
   setPositions(opponents(ship));
@@ -257,7 +263,7 @@ const getPositionCircle = (position: number) => {
 };
 
 return (
-  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-black/50 flex items-center justify-center w-[80vw] h-[180vh] overflow-auto rounded-lg z-50">
+  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-black/50 flex items-center justify-center w-full h-[180vh] overflow-auto rounded-lg z-50">
     <style>{styles}</style>
     {showConfetti && (
       <Confetti
@@ -340,7 +346,7 @@ return (
                 )}
                 <div className="flex-1">
                   <div className="text-white font-medium">{racer.name}</div>
-                  <div className="grid grid-cols-4 gap-4 mt-1">
+                  <div className="grid grid-cols-5 gap-4 mt-1">
                     <div className="text-gray-400 text-sm">Oil: {racer.stats.oil}</div>
                     <div className="text-gray-400 text-sm">Power: {racer.stats.power}</div>
                     <div className="text-gray-400 text-sm">Speed: {racer.stats.speed}</div>

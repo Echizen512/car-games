@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { NextPage } from "next";
 
 interface Particle {
   x: number;
@@ -12,28 +13,23 @@ interface ParticleBackgroundProps {
   rarity: string;
 }
 
-const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ rarity }) => {
+const ParticleBackground: NextPage<ParticleBackgroundProps> = ({ rarity }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const getParticleColor = (rarity: string) => {
-    switch (rarity.toLowerCase()) {
-      case "común":
+    switch (rarity) {
       case "common":
-        return "#3B82F6"; // blue
-      case "poco común":
+        return "#3B82F6";
       case "uncommon":
-        return "#22C55E"; // green
-      case "raro":
+        return "#22C55E";
       case "rare":
-        return "#A855F7"; // purple
-      case "épico":
+        return "#A855F7";
       case "epic":
-        return "#F97316"; // orange
-      case "legendario":
+        return "#F97316";
       case "legendary":
-        return "#EAB308"; // yellow
+        return "#EAB308";
       default:
-        return "#6B7280"; // gray
+        return "#6B7280";
     }
   };
 
@@ -48,7 +44,6 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ rarity }) => {
     const particleCount = 50;
     const color = getParticleColor(rarity);
 
-    // Set canvas size
     const resizeCanvas = () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;

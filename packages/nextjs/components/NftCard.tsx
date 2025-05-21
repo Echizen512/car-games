@@ -3,6 +3,7 @@ import Image from "next/image";
 import ParticleBackground from "./ParticleBackground";
 import VirtualRace from "./VirtualRace";
 import { NextPage } from "next";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { INftAttribute, INftDataSea, INftPreview } from "~~/types/nftData.entity";
 
 type NftCardProps = {
@@ -18,9 +19,10 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
 
   const getPreviewNft = useCallback(async () => {
     try {
-      setLoadData(true);
       const req = await fetch(data.metadata_url);
       const res: INftPreview = await req.json();
+
+      console.log(res);
       setNftPreview(res);
     } catch (err) {
       console.error(err);
@@ -86,6 +88,13 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
         <div className="card bg-primary flex-1 shadow-sm rounded-xl h-50 p-5 gap-2 justify-center items-center">
           <span className="loading loading-spinner loading-xl" />
           <span className="text-white text-md">Loading...</span>
+        </div>
+      ) : nftPreview === null ? (
+        <div className="card bg-secondary flex-1 shadow-sm rounded-xl h-50 p-5 gap-2 justify-center items-center">
+          <h3 className="font-semibold text-md text-center">check your internet connection and try again.</h3>
+          <button className="btn btn-primary" onClick={getPreviewNft}>
+            <ArrowPathIcon className="w-4 h-4" /> Reload
+          </button>
         </div>
       ) : (
         (selectedRarity === "all" ||

@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import NftCard from "~~/components/NftCard";
 import PlaceHolderNftCard from "~~/components/PlaceHolderNftCard";
 import { INftDataSea, INftDataSeaResponse } from "~~/types/nftData.entity";
@@ -53,13 +55,30 @@ const Home: NextPage = () => {
         </div>
       </article>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 gap-2">
-        {loaderNft ? (
+      {loaderNft ? (
+        <article className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 gap-2">
           <PlaceHolderNftCard />
-        ) : (
-          userNfts !== null && userNfts.map((x, y) => <NftCard key={y} data={x} selectedRarity={selectedRarity} />)
-        )}
-      </section>
+        </article>
+      ) : userNfts === null ? (
+        <AnimatePresence>
+          <motion.article
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex justify-center flex-col gap-2 items-center h-96"
+          >
+            <h3 className="font-semibold text-2xl">check your internet connection and try again.</h3>
+            <button className="btn btn-primary" onClick={getUserNFTs}>
+              <ArrowPathIcon className="w-4 h-4" /> Reload
+            </button>
+          </motion.article>
+        </AnimatePresence>
+      ) : (
+        <article className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 gap-2">
+          {userNfts.map((x, y) => (
+            <NftCard key={y} data={x} selectedRarity={selectedRarity} />
+          ))}
+        </article>
+      )}
     </section>
   );
 };

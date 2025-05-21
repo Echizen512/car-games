@@ -1,13 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-// import CarCard from "./components/CarCard";
-// import { carData } from "./data/carData";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import NftCard from "~~/components/NftCard";
-// import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-// import { Address } from "~~/components/scaffold-eth";
 import { useScaffoldContract, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 const Home: NextPage = () => {
@@ -16,7 +12,7 @@ const Home: NextPage = () => {
 
   const rarityTypes = ["All", "Common", "Uncommon", "Rare", "Epic"];
 
-  //smart contract
+  // Smart contract
   const { data: userNFTs } = useScaffoldReadContract({
     contractName: "RoninZodiacs",
     functionName: "getUserNFTs",
@@ -41,10 +37,10 @@ const Home: NextPage = () => {
 
   const { data: zodiacContract } = useScaffoldContract({ contractName: "RoninZodiacs" });
 
-  //write smart
+  // Write smart contract
   const { writeContractAsync: writeRoninZodiacsAsync } = useScaffoldWriteContract({ contractName: "RoninZodiacs" });
 
-  //functions
+  // Update OpenSea metadata
   const updateOpenSeaMetaData = async () => {
     if (maxNftID === undefined) return;
     for (let i = 0; i < maxNftID; i++) {
@@ -82,7 +78,6 @@ const Home: NextPage = () => {
             console.log(err);
           }
         }}
-        // disabled={revealNFT}
       >
         Disclose All NFT
       </button>
@@ -94,80 +89,23 @@ const Home: NextPage = () => {
       </article>
 
       <section className="grid grid-cols-4 p-5 gap-2">
+        {/* Tarjeta NFT ficticia */}
+        <NftCard
+          data={{
+            tokenId: BigInt(999),
+            tokenURI: "https://example.com/nft-mock",
+          }}
+          revealNFT={true}
+          selectedRarity="Epic"
+        />
+
+        {/* Tarjetas NFT reales obtenidas de la wallet */}
         {userNFTs?.map((data, key) => (
           <NftCard key={key} data={data} revealNFT={revealNFT} selectedRarity={selectedRarity} />
         ))}
       </section>
-
-      {/* <div className="grow bg-base-300 w-full mt-12 px-8 py-12"> */}
-      {/* <div className="flex flex-col items-center">
-          <h2 className="text-3xl font-bold mb-4">Car Collection</h2>
-          <div className="flex gap-2 mb-6">
-            {rarityTypes.map(rarity => (
-              <button
-                key={rarity}
-                onClick={() => setSelectedRarity(rarity.toLowerCase())}
-                className={`btn btn-primary  rounded-lg font-medium transition-colors ${
-                  selectedRarity === rarity.toLowerCase()
-                    ? "bg-rose-600 text-white"
-                    : "bg-white/10 text-white hover:bg-white/20"
-                }`}
-              >
-                {rarity}
-              </button>
-            ))}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCars.map(car => (
-              <CarCard key={car.id} car={car} />
-            ))}
-          </div>
-        </div>
-      </div> */}
     </section>
   );
 };
-
-// function NftGallery({ nose }) {
-//   const [previews, setPreviews] = useState({});
-
-//   useEffect(() => {
-//     async function fetchPreviews() {
-//       const previewData = {};
-
-//       for (const x of nose) {
-//         const preview = await getPreviewNft(x.tokenURI);
-//         previewData[x.tokenId] = preview; // Guardar cada NFT con su ID
-//       }
-
-//       setPreviews(previewData);
-//     }
-
-//     fetchPreviews();
-//   }, [nose]);
-
-//   return (
-//     <div>
-//       {nose?.map((x, y) => {
-//         const res = previews[x.tokenId]; // Obtener los datos del NFT ya procesado
-
-//         return (
-//           <div key={y} className="card bg-base-100 w-96 shadow-sm">
-//             <figure>
-//               <img src={res?.image} alt="NFT" />
-//             </figure>
-//             <div className="card-body">
-//               <h2 className="card-title">{x.tokenId.toString()}</h2>
-//               <p>Descripción del NFT</p>
-//               <div className="card-actions justify-end">
-//                 <button className="btn btn-primary">Comprar</button>
-//               </div>
-//             </div>
-//           </div>
-//         );
-//       })}
-//     </div>
-//   );
-// }
 
 export default Home;

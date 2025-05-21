@@ -110,7 +110,7 @@ const Presentation: NextPage = () => {
 
           {/* Title  */}
           <section className="mt-12">
-            <h3 className="text-center text-3xl font-semibold">What is Ronin Zodiacs?</h3>
+            <h3 className="text-center text-3xl font-semibold">What is Ronken Ships?</h3>
             <div className="text-center mb-12 lg:w-6/12 mx-auto">
               <img src="/ronin.png" alt="NFT Racing Logo" className="mx-auto mb-4 w-20 h-auto" />
               <p className="text-lg">

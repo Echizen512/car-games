@@ -117,3 +117,17 @@
 .link:hover {
   opacity: 80%;
 }
+
+/* Custom  */
+:root[data-theme="light"] {
+  --color-withdraw: #fd9a00; /* Color de día */
+}
+
+:root[data-theme="dark"] {
+  --color-withdraw: #d87c00; /* Color de noche */
+}
+
+.btn-withdraw {
+  --btn-color: var(--color-withdraw);
+  --btn-fg: var(--color-primary-content);
+}

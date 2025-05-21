@@ -1,55 +1,44 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import NftCard from "~~/components/NftCard";
-import { useScaffoldContract, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import PlaceHolderNftCard from "~~/components/PlaceHolderNftCard";
+import { INftDataSea, INftDataSeaResponse } from "~~/types/nftData.entity";
 
 const Home: NextPage = () => {
   const { address } = useAccount();
-  const [selectedRarity, setSelectedRarity] = useState<string>("all");
 
+  //states
+  const [userNfts, setUserNfts] = useState<INftDataSea[] | null>(null);
+  const [selectedRarity, setSelectedRarity] = useState<string>("all");
+  const [loaderNft, setLoaderNft] = useState<boolean>(false);
   const rarityTypes = ["All", "Common", "Uncommon", "Rare", "Epic"];
 
-  // Smart contract
-  const { data: userNFTs } = useScaffoldReadContract({
-    contractName: "RoninZodiacs",
-    functionName: "getUserNFTs",
-    args: [address],
-  });
-
-  const { data: userBalance } = useScaffoldReadContract({
-    contractName: "Finance",
-    functionName: "balances",
-    args: [address],
-  });
-
-  const { data: revealNFT } = useScaffoldReadContract({
-    contractName: "RoninZodiacs",
-    functionName: "reveal",
-  });
-
-  const { data: maxNftID } = useScaffoldReadContract({
-    contractName: "RoninZodiacs",
-    functionName: "nextTokenId",
-  });
-
-  const { data: zodiacContract } = useScaffoldContract({ contractName: "RoninZodiacs" });
-
-  // Write smart contract
-  const { writeContractAsync: writeRoninZodiacsAsync } = useScaffoldWriteContract({ contractName: "RoninZodiacs" });
-
-  // Update OpenSea metadata
-  const updateOpenSeaMetaData = async () => {
-    if (maxNftID === undefined) return;
-    for (let i = 0; i < maxNftID; i++) {
-      await fetch(
-        `https://testnets-api.opensea.io/api/v2/chain/saigon_testnet/contract/${zodiacContract?.address}/nfts/${i}/refresh`,
-        { method: "POST" },
+  //functions
+  const getUserNFTs = useCallback(async () => {
+    try {
+      setLoaderNft(true);
+      const req = await fetch(
+        `https://testnets-api.opensea.io/api/v2/chain/sepolia/account/${address}/nfts?collection=fuerza-com`,
       );
+
+      const res: INftDataSeaResponse = await req.json();
+      setUserNfts(res.nfts);
+
+      console.log(res.nfts);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoaderNft(false);
     }
-  };
+  }, [address]);
+
+  //effects
+  useEffect(() => {
+    getUserNFTs();
+  }, [getUserNFTs]);
 
   return (
     <section className="flex flex-col w-full h-full">
@@ -65,44 +54,12 @@ const Home: NextPage = () => {
         ))}
       </article>
 
-      <button
-        className="btn btn-warning w-40 mt-5 mx-auto"
-        onClick={async () => {
-          try {
-            await writeRoninZodiacsAsync({
-              functionName: "disclose",
-            });
-
-            await updateOpenSeaMetaData();
-          } catch (err) {
-            console.log(err);
-          }
-        }}
-      >
-        Disclose All NFT
-      </button>
-
-      <article className="flex gap-5 mt-2 w-full justify-center">
-        <h2 className="text-xl font-bold">
-          Your Balance: {userBalance ? `${userBalance.toString()} Ronin` : "0 (RON)"}
-        </h2>
-      </article>
-
       <section className="grid grid-cols-4 p-5 gap-2">
-        {/* Tarjeta NFT ficticia */}
-        <NftCard
-          data={{
-            tokenId: BigInt(999),
-            tokenURI: "https://example.com/nft-mock",
-          }}
-          revealNFT={true}
-          selectedRarity="Epic"
-        />
-
-        {/* Tarjetas NFT reales obtenidas de la wallet */}
-        {userNFTs?.map((data, key) => (
-          <NftCard key={key} data={data} revealNFT={revealNFT} selectedRarity={selectedRarity} />
-        ))}
+        {loaderNft ? (
+          <PlaceHolderNftCard />
+        ) : (
+          userNfts !== null && userNfts.map((x, y) => <NftCard key={y} data={x} selectedRarity={selectedRarity} />)
+        )}
       </section>
     </section>
   );

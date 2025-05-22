@@ -4,7 +4,11 @@ import { ThemeProvider } from "~~/components/ThemeProvider";
 import "~~/styles/globals.css";
 import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
 
-export const metadata = getMetadata({ title: "Ronken Ships", description: "Ronken ships Game" });
+export const metadata = getMetadata({
+  title: "Ronken Ships",
+  description: "Ronken ships Game",
+  imageRelativePath: "/favicon.png",
+});
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   return (

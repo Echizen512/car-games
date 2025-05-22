@@ -42,9 +42,9 @@ const Presentation: NextPage = () => {
               }}
               className="flex flex-col gap-3 justify-center items-center mb-18 pointer-events-auto"
             >
-              <img src="/ronin.png" alt="NFT Racing Logo" className="mx-auto mt-2 w-20 h-auto" />
+              <Image src="/favicon.png" alt="Ronken Logo" width={100} height={100} className="mx-auto mt-2" />
               <h1 className="text-6xl font-semibold">Ronken Ships</h1>
-              
+
               <span className="w-4/12 text-center">
                 Get ready for battle on the high seas. Face the challenge, claim your place and win great rewards in
                 $RKS.
@@ -117,7 +117,8 @@ const Presentation: NextPage = () => {
             <h3 className="text-center text-3xl font-semibold">What is Ronken Ships?</h3>
             <div className="text-center mb-12 lg:w-6/12 mx-auto">
               <p className="text-lg text-justify">
-                Ronken Ships is an NFT-powered racing game where your ship competes against three virtual rivals. With fuel strategy, rare ships, and token rewards, speed is key to victory! 🚢🏆
+                Ronken Ships is an NFT-powered racing game where your ship competes against three virtual rivals. With
+                fuel strategy, rare ships, and token rewards, speed is key to victory! 🚢🏆
               </p>
 
               <span>
@@ -135,17 +136,19 @@ const Presentation: NextPage = () => {
                 <div className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Game Mode 🎮</h2>
                   <p className="text-justify">
-                    🚢 In each race, you’ll face off against three virtual opponents, making a total of four contenders battling for victory. 🏆 The top three finishers will earn valuable token rewards, so strategy and speed are key to securing your place on the leaderboard!
+                    🚢 In each race, you’ll face off against three virtual opponents, making a total of four contenders
+                    battling for victory. 🏆 The top three finishers will earn valuable token rewards, so strategy and
+                    speed are key to securing your place on the leaderboard!
                   </p>
                   <ul className="list-disc pl-5">
                     <li className="mb-3">
-                      🥇 <span className="font-bold">1st place:</span> 
+                      🥇 <span className="font-bold">1st place:</span>
                     </li>
                     <li className="mb-3">
-                      🥈 <span className="font-bold">2nd place:</span> 
+                      🥈 <span className="font-bold">2nd place:</span>
                     </li>
                     <li className="mb-3">
-                      🥉 <span className="font-bold">3rd place:</span> 
+                      🥉 <span className="font-bold">3rd place:</span>
                     </li>
                   </ul>
                 </div>

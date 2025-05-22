@@ -158,7 +158,7 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
                     setSelectedShip(prepareShipData());
                     setShowRace(true);
                   }}
-                  className="btn btn-primary py-2 rounded-md font-medium"
+                  className="btn btn-success rounded-md font-medium"
                 >
                   Start Virtual Race
                 </button>

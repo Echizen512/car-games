@@ -139,13 +139,13 @@ const Presentation: NextPage = () => {
                   </p>
                   <ul className="list-disc pl-5">
                     <li className="mb-3">
-                      🥇 <span className="font-bold">1st place:</span> 10 tokens
+                      🥇 <span className="font-bold">1st place:</span> 
                     </li>
                     <li className="mb-3">
-                      🥈 <span className="font-bold">2nd place:</span> 7.5 tokens
+                      🥈 <span className="font-bold">2nd place:</span> 
                     </li>
                     <li className="mb-3">
-                      🥉 <span className="font-bold">3rd place:</span> 5 tokens
+                      🥉 <span className="font-bold">3rd place:</span> 
                     </li>
                   </ul>
                 </div>

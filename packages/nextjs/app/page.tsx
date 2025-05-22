@@ -74,7 +74,7 @@ const Home: NextPage = () => {
             </button>
           </motion.article>
         </AnimatePresence>
-      ) : (
+      ) : userNfts.length > 0 ? (
         <article className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 gap-2">
           {userNfts
             .sort((a: INftDataSea, b: INftDataSea) => parseInt(a.identifier) - parseInt(b.identifier))
@@ -82,6 +82,17 @@ const Home: NextPage = () => {
               <NftCard key={y} data={x} selectedRarity={selectedRarity} />
             ))}
         </article>
+      ) : (
+        <motion.article
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex justify-center flex-col gap-2 items-center h-96"
+        >
+          <h3 className="font-semibold text-2xl">You still do not have NFT.</h3>
+          <button className="btn btn-primary" onClick={getUserNFTs}>
+            <ArrowPathIcon className="w-4 h-4" /> Reload
+          </button>
+        </motion.article>
       )}
     </section>
   );

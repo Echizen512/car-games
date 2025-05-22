@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 
-//TODO: Music: Kiss of eath
+//TODO: Music: Kiss of death
 interface Ship {
   id: string;
   name: string;
@@ -112,12 +112,11 @@ const getImageByCategory = (category: string) => {
 
 const availableOpponents = selectedConfig.map((category, index) => ({
   id: `opponent${index + 1}`,
-  name: opponentNames[index % opponentNames.length], 
+  name: opponentNames[index % opponentNames.length],
   position: index + 1,
-  image: getImageByCategory(category), 
+  image: getImageByCategory(category),
   stats: getStatsByCategory(category),
 }));
-
 
 const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
   //states
@@ -135,13 +134,12 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
   const [playbackRate, setPlaybackRate] = useState(1);
   const shipSize = 200;
 
-useEffect(() => {
-  if (ship) {
-    console.log("NFT seleccionado en VirtualRace:", ship);
-    setPositions(opponents(ship));
-  }
-}, [ship]);
-
+  useEffect(() => {
+    if (ship) {
+      console.log("NFT seleccionado en VirtualRace:", ship);
+      setPositions(opponents(ship));
+    }
+  }, [ship]);
 
   useEffect(() => {
     setPositions(opponents(ship));

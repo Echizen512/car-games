@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { NextPage } from "next";
-import { ChevronDoubleDownIcon } from "@heroicons/react/24/outline";
 import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 
 const Presentation: NextPage = () => {
@@ -55,7 +54,7 @@ const Presentation: NextPage = () => {
               </div>
             </motion.article>
 
-            {/* cars */}
+            {/* ships */}
             <div className="flex justify-center top-14">
               <motion.img
                 initial={{ x: -800 }}
@@ -105,9 +104,7 @@ const Presentation: NextPage = () => {
                   animate={{ scale: [1, 0.8, 1], y: [-6, 0, -6] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                   className="btn btn-circle btn-ghost z-0"
-                >
-
-                </motion.span>
+                ></motion.span>
               </div>
             </div>
           </motion.section>

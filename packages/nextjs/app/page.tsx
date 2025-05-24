@@ -12,7 +12,8 @@ import { INftDataSea, INftDataSeaResponse } from "~~/types/nftData.entity";
 const Home: NextPage = () => {
   const { address } = useAccount();
 
-  const rarityColors = {
+  //constants
+  const rarityColors: { [key: string]: string } = {
     all: "bg-blue-500",
     common: "bg-gray-600",
     uncommon: "bg-green-600",
@@ -53,7 +54,7 @@ const Home: NextPage = () => {
     <section className="flex flex-col w-full h-full">
       <article className="flex gap-5 mt-2 w-full justify-center">
         <div className="p-4 mx-auto grid grid-cols-3 sm:flex gap-5 justify-center">
-          {rarityTypes.map((x, y) => (
+          {rarityTypes.map((x: string, y: number) => (
             <button
               key={y}
               onClick={() => setSelectedRarity(x.toLowerCase())}

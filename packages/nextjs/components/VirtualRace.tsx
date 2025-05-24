@@ -288,15 +288,15 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               </button>
             )}
 
-<video
-  ref={videoRef}
-  src="/fondo.mp4"
-  className="w-full h-full object-fill z-10 track mt-2"
-  style={{ position: "absolute", zIndex: 10 }}
-  preload="auto"
-  muted
-  playsInline
-/>
+            <video
+              ref={videoRef}
+              src="/fondo.mp4"
+              className="w-full h-full object-fill track mt-8 ml-8, ml-8"
+              style={{ position: "absolute",  }}
+              preload="auto"
+              muted
+              playsInline
+            />
 
 
             {isShipVisible && (
@@ -332,9 +332,8 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               return (
                 <div
                   key={`${racer.id}-${triggerAnimation}`}
-                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${
-                    racer.id === ship.id ? "bg-yellow-500/20" : ""
-                  }`}
+                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${racer.id === ship.id ? "bg-yellow-500/20" : ""
+                    }`}
                   style={{ "--startY": `${translateY}px` } as React.CSSProperties}
                 >
                   {getPositionCircle(racer.position)}

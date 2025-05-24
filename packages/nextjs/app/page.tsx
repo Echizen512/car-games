@@ -12,13 +12,21 @@ import { INftDataSea, INftDataSeaResponse } from "~~/types/nftData.entity";
 const Home: NextPage = () => {
   const { address } = useAccount();
 
-  //states
+  const rarityColors = {
+    all: "bg-blue-500",
+    common: "bg-gray-600",
+    uncommon: "bg-green-600",
+    rare: "bg-purple-600",
+    epic: "bg-orange-500",
+  };
+
+  // States
   const [userNfts, setUserNfts] = useState<INftDataSea[] | null>(null);
   const [selectedRarity, setSelectedRarity] = useState<string>("all");
   const [loaderNft, setLoaderNft] = useState<boolean>(false);
   const rarityTypes = ["All", "Common", "Uncommon", "Rare", "Epic"];
 
-  //functions
+  // Functions
   const getUserNFTs = useCallback(async () => {
     try {
       setLoaderNft(true);
@@ -36,7 +44,7 @@ const Home: NextPage = () => {
     }
   }, [address]);
 
-  //effects
+  // Effects
   useEffect(() => {
     getUserNFTs();
   }, [getUserNFTs]);
@@ -49,7 +57,7 @@ const Home: NextPage = () => {
             <button
               key={y}
               onClick={() => setSelectedRarity(x.toLowerCase())}
-              className={`${selectedRarity.toLowerCase() === x.toLowerCase() ? "btn-primary" : "btn-secondary"} btn w-28`}
+              className={`btn w-28 text-white font-semibold ${rarityColors[x.toLowerCase()]} ${selectedRarity === x.toLowerCase() ? "ring-2 ring-yellow-400" : ""}`}
             >
               {x}
             </button>
@@ -68,7 +76,7 @@ const Home: NextPage = () => {
             animate={{ opacity: 1 }}
             className="flex justify-center flex-col gap-2 items-center h-96"
           >
-            <h3 className="font-semibold text-2xl">check your internet connection and try again.</h3>
+            <h3 className="font-semibold text-2xl">Check your internet connection and try again.</h3>
             <button className="btn btn-primary" onClick={getUserNFTs}>
               <ArrowPathIcon className="w-4 h-4" /> Reload
             </button>

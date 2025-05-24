@@ -106,106 +106,11 @@ const Presentation: NextPage = () => {
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                   className="btn btn-circle btn-ghost z-0"
                 >
-                  <ChevronDoubleDownIcon />
+
                 </motion.span>
               </div>
             </div>
           </motion.section>
-
-          {/* Title  */}
-          <section className="mt-12">
-            <h3 className="text-center text-3xl font-semibold">What is Ronken Ships?</h3>
-            <div className="text-center mb-12 lg:w-6/12 mx-auto">
-              <p className="text-lg text-justify">
-                Ronken Ships is an NFT-powered racing game where your ship competes against three virtual rivals. With
-                fuel strategy, rare ships, and token rewards, speed is key to victory! 🚢🏆
-              </p>
-
-              <span>
-                For more details on the economics of the game and our long-term vision, see our white paper &nbsp;
-                <a href="https://ronkeships.gitbook.io/ronkeships-whitepaper" className="link-info">
-                  here
-                </a>
-              </span>
-            </div>
-
-            <div className="flex gap-6 justify-center mb-4">
-              {/* Card Game Mode */}
-              <div className="bg-primary shadow-lg rounded-lg overflow-hidden transform hover:-translate-y-2 transition duration-500 w-80">
-                <img src="/game-mode.png" alt="Game Mode 🎮" className="w-full h-44" />
-                <div className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Game Mode 🎮</h2>
-                  <p className="text-justify">
-                    🚢 In each race, you’ll face off against three virtual opponents, making a total of four contenders
-                    battling for victory. 🏆 The top three finishers will earn valuable token rewards, so strategy and
-                    speed are key to securing your place on the leaderboard!
-                  </p>
-                  <ul className="list-disc pl-5">
-                    <li className="mb-3">
-                      🥇 <span className="font-bold">1st place:</span>
-                    </li>
-                    <li className="mb-3">
-                      🥈 <span className="font-bold">2nd place:</span>
-                    </li>
-                    <li className="mb-3">
-                      🥉 <span className="font-bold">3rd place:</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Card Fuel System */}
-              <div className="bg-primary shadow-lg rounded-lg overflow-hidden transform hover:-translate-y-2 transition duration-500 w-80">
-                <img src="/game-system.jpg" alt="Fuel System ⛽" className="w-full h-44" />
-                <div className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Fuel System ⛽</h2>
-                  <p className="text-justify">
-                    The amount of fuel depends on the rarity of the NFT. Each race consumes 15 fuel, so strategic
-                    management will be key:
-                  </p>
-                  <ul className="list-disc pl-5">
-                    <li className="mb-2">
-                      🟢 <span className="font-bold">Common:</span> 30 fuel
-                    </li>
-                    <li className="mb-2">
-                      🔵 <span className="font-bold">Uncommon:</span> 45 fuel
-                    </li>
-                    <li className="mb-2">
-                      🟣 <span className="font-bold">Rare:</span> 60 fuel
-                    </li>
-                    <li className="mb-2">
-                      🟠 <span className="font-bold">Epic:</span> 75 fuel
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Card Rewards System */}
-              <div className="bg-primary shadow-xl rounded-lg overflow-hidden transform hover:-translate-y-2 transition duration-500 w-80">
-                <img src="/rewards.png" alt="Rewards System 💰" className="w-full h-44" />
-                <div className="p-6">
-                  <h2 className="text-xl font-semibold mb-4 text-white">Rewards System 💰</h2>
-                  <p className="text-white text-lg text-justify">
-                    To prevent massive dumping, token withdrawals have penalties based on waiting time:
-                  </p>
-                  <ul className="list-disc pl-5">
-                    <li className="mb-3">
-                      🚨 <span className="font-bold">Immediate withdrawal:</span> 50% penalty
-                    </li>
-                    <li className="mb-3">
-                      ⏳ <span className="font-bold">After 24 hours:</span> 30%
-                    </li>
-                    <li className="mb-3">
-                      🔄 <span className="font-bold">After 48 hours:</span> 20%
-                    </li>
-                    <li className="mb-3">
-                      ✅ <span className="font-bold">After 72 hours:</span> Only 5%
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </section>
         </>
       )}
     </main>

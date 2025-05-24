@@ -1,64 +1,79 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.0;
-import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+pragma solidity ^0.8.27;
+
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract Finance is Ownable {
-    mapping(address => uint256) public balances; // Players' earnings
-    mapping(address => uint256) public lastBetTime; // Betting time record
+    IERC20 public ronKeToken;
 
-    event BetPlaced(address indexed player, uint256 amount);
-    event Payout(address indexed player, uint256 amount);
-    event Withdrawal(address indexed player, uint256 amount, uint256 penalty);
-
-    constructor(address initialOwner) Ownable(initialOwner) {}
-
-    function placeBet() external payable {
-        require(msg.value >= 5, "You must bet at least 5 units"); // Enforcing minimum bet
-        balances[msg.sender] += msg.value;
-        lastBetTime[msg.sender] = block.timestamp; // Store betting time
-
-        emit BetPlaced(msg.sender, msg.value);
+    struct Reward {
+        uint256 amount;
+        uint256 timestamp;
     }
 
-    function resolveRace(address player, uint8 position) external {
-        uint256 betAmount = balances[player]; // Amount bet by the player
+    mapping(address => Reward[]) public rewards; // Record of earnings per user
+    event RaceStarted(address indexed player);
+    event RewardGiven(address indexed player, uint256 amount);
+    event Withdrawal(address indexed player, uint256 amount, uint256 penalty);
+
+    constructor(address initialOwner, address _ronKeToken) Ownable(initialOwner) {
+        ronKeToken = IERC20(_ronKeToken);
+    }
+
+    function startRace() external {
+        emit RaceStarted(msg.sender);
+    }
+
+    function grantReward(address player, uint8 position) external onlyOwner {
+        uint256 rewardAmount;
 
         if (position == 1) {
-            balances[player] += (betAmount * 110) / 100; // Winner gets a 10% bonus
+            rewardAmount = 8 * 10**18; // 8 RKS
         } else if (position == 2) {
-            balances[player] += betAmount; // Second place keeps their bet amount
+            rewardAmount = 5 * 10**18; // 5 RKS
         } else if (position == 3) {
-            uint256 loss = betAmount / 2;
-            balances[player] += betAmount - loss; // Third place loses 50% of their bet
-            balances[owner()] += loss; // The owner receives the lost amount
+            rewardAmount = 3 * 10**18; // 3 RKS
         } else {
-            balances[owner()] += betAmount; // Other positions lose their full bet to the owner
+            rewardAmount = 0; // No reward for fourth place or beyond
         }
 
-        emit Payout(player, balances[player]);
+        require(rewardAmount > 0, "No reward for this position");
+        require(ronKeToken.balanceOf(address(this)) >= rewardAmount, "Insufficient funds in contract");
+
+        rewards[player].push(Reward(rewardAmount, block.timestamp));
+        ronKeToken.transfer(player, rewardAmount);
+
+        emit RewardGiven(player, rewardAmount);
     }
 
     function withdrawEarnings() external {
-        uint256 amount = balances[msg.sender];
-        require(amount > 0, "No earnings available for withdrawal");
-
-        uint256 timeElapsed = block.timestamp - lastBetTime[msg.sender];
+        uint256 totalAmount = 0;
         uint256 penalty = 0;
+        uint256 currentTime = block.timestamp;
 
-        // Withdrawal penalty system based on time elapsed
-        if (timeElapsed < 24 hours) {
-            penalty = (amount * 50) / 100; // 50%
-        } else if (timeElapsed < 48 hours) {
-            penalty = (amount * 30) / 100; // 30%
-        } else if (timeElapsed < 72 hours) {
-            penalty = (amount * 5) / 100; // 20%
+        // Calculate earnings and penalties based on elapsed time
+        for (uint256 i = 0; i < rewards[msg.sender].length; i++) {
+            uint256 timeElapsed = currentTime - rewards[msg.sender][i].timestamp;
+            uint256 amount = rewards[msg.sender][i].amount;
+
+            if (timeElapsed < 24 hours) {
+                penalty += (amount * 50) / 100; // 50% penalty
+            } else if (timeElapsed < 48 hours) {
+                penalty += (amount * 30) / 100; // 30% penalty
+            } else if (timeElapsed < 72 hours) {
+                penalty += (amount * 20) / 100; // 20% penalty
+            }
+
+            totalAmount += amount;
         }
 
-        uint256 finalAmount = amount - penalty;
-        balances[msg.sender] = 0;
-        balances[owner()] += penalty; // The owner receives the penalty amount
+        require(totalAmount > 0, "No earnings available for withdrawal");
+        uint256 finalAmount = totalAmount - penalty;
 
-        payable(msg.sender).transfer(finalAmount);
+        rewards[msg.sender] = new Reward[](0); // Clear user's earnings history
+        ronKeToken.transfer(owner(), penalty); // Transfer penalty amount to contract owner
+        ronKeToken.transfer(msg.sender, finalAmount);
 
         emit Withdrawal(msg.sender, finalAmount, penalty);
     }

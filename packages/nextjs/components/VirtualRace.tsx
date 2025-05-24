@@ -131,7 +131,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
   const previousPositionsRef = useRef<RacerPosition[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playbackRate, setPlaybackRate] = useState(1);
-  const shipSize = 200;
+  const shipSize = 150;
 
   useEffect(() => {
     if (ship) {
@@ -266,7 +266,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
   };
 
   return (
-    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-black/50 flex items-center justify-center w-full h-[180vh] overflow-auto rounded-lg z-50">
+    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-black/50 flex items-center justify-center w-[50vw] h-[90vh] overflow-auto rounded-lg z-50">
       <style>{styles}</style>
       {showConfetti && (
         <Confetti
@@ -276,8 +276,8 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
           recycle={false}
         />
       )}
-      <div className="bg-white rounded-lg w-full max-w-4xl">
-        <div className="bg-white p-4 rounded-t-lg h-[500px] w-full relative">
+      <div className="bg-white rounded-lg w-full max-w-3xl">
+        <div className="bg-white p-4 rounded-t-lg h-[400px] w-full relative">
           <div className="relative h-full w-full flex items-center justify-center">
             {raceTime <= 0 && (
               <button
@@ -288,21 +288,22 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               </button>
             )}
 
-            <video
-              ref={videoRef}
-              src="/fondo.mp4"
-              className="w-[695px] h-[495px] object-contain z-10 track"
-              style={{ position: "absolute", zIndex: 10 }}
-              preload="auto"
-              muted
-              playsInline
-            />
+<video
+  ref={videoRef}
+  src="/fondo.mp4"
+  className="w-full h-full object-fill z-10 track mt-2"
+  style={{ position: "absolute", zIndex: 10 }}
+  preload="auto"
+  muted
+  playsInline
+/>
+
 
             {isShipVisible && (
               <img
                 src={ship.image || "https://via.placeholder.com/80?text=Ship"}
                 alt={ship.name}
-                className="absolute top-[250px] left-[340px] z-20 ship"
+                className="absolute top-[200px] left-[200px] z-20 ship"
                 style={{ width: `${shipSize}px`, height: `${shipSize}px`, zIndex: 20 }}
                 onError={e => (e.currentTarget.src = "https://via.placeholder.com/80?text=Ship+Error")}
               />
@@ -312,12 +313,12 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
           </div>
           {countdown !== 0 && (
             <div className="absolute inset-0 flex items-center justify-center z-50">
-              <span className="text-8xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">{countdown}</span>
+              <span className="text-6xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">{countdown}</span>
             </div>
           )}
           {raceTime <= 0 && playerPosition && (
             <div className="absolute inset-0 flex items-center justify-center z-50">
-              <span className="text-8xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+              <span className="text-6xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
                 {playerPosition}
               </span>
             </div>
@@ -378,4 +379,5 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
     </div>
   );
 };
+
 export default VirtualRace;

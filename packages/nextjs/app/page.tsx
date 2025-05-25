@@ -8,9 +8,11 @@ import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import NftCard from "~~/components/NftCard";
 import PlaceHolderNftCard from "~~/components/PlaceHolderNftCard";
 import { INftDataSea, INftDataSeaResponse } from "~~/types/nftData.entity";
+import { BrowserProvider, Contract, formatUnits } from "ethers";
 
 const Home: NextPage = () => {
   const { address } = useAccount();
+  const [balance, setBalance] = useState<string>("0");
 
   //constants
   const rarityColors: { [key: string]: string } = {
@@ -22,6 +24,11 @@ const Home: NextPage = () => {
   };
   const rarityTypes = ["All", "Common", "Uncommon", "Rare", "Epic"];
   const pageSize = 8;
+
+  const ronKeTokenAddress = "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853";
+  const ronKeABI = [
+    "function balanceOf(address) view returns (uint256)",
+  ];
 
   // States
   const [userNfts, setUserNfts] = useState<INftDataSea[] | null>(null);
@@ -57,12 +64,38 @@ const Home: NextPage = () => {
     setCurrentViewNft({ initial: newInitial, end: newEnd });
   }, [currentPage, userNfts?.length]);
 
+
+
+  useEffect(() => {
+    const getBalance = async () => {
+      if (!address) return;
+
+      const provider = new BrowserProvider(window.ethereum);
+      const contract = new Contract(ronKeTokenAddress, ronKeABI, provider);
+
+      const balanceWei = await contract.balanceOf(address);
+      setBalance(formatUnits(balanceWei, 18)); // Formateo a decimales estándar
+    };
+
+    getBalance();
+  }, [address]);
+
+
   return (
     <section className="flex flex-col w-full h-full">
+<div className="flex justify-center items-center p-2 mt-4">
+  <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-xl rounded-lg p-4 w-auto">
+    <h2 className=" font-semibold flex items-center">
+      Total Token Balance:
+      <span className=" font-bold text-yellow-300"> {balance} RKS</span>
+    </h2>
+  </div>
+</div>
+
       <AnimatePresence>
         {userNfts !== null && userNfts !== undefined && userNfts.length > 0 && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <article className="flex gap-5 mt-2 w-full justify-center">
+            <article className="flex gap-5 w-full justify-center">
               <div className="p-4 mx-auto grid grid-cols-3 sm:flex gap-5 justify-center">
                 {rarityTypes.map((x: string, y: number) => (
                   <button
@@ -96,6 +129,7 @@ const Home: NextPage = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
 
       {loaderNft ? (
         <article className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 gap-2">

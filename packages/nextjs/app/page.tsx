@@ -7,7 +7,6 @@ import { useAccount } from "wagmi";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import NftCard from "~~/components/NftCard";
 import PlaceHolderNftCard from "~~/components/PlaceHolderNftCard";
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { INftDataSea, INftDataSeaResponse } from "~~/types/nftData.entity";
 
 const Home: NextPage = () => {
@@ -30,12 +29,6 @@ const Home: NextPage = () => {
   const [loaderNft, setLoaderNft] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [currentViewNft, setCurrentViewNft] = useState<{ initial: number; end: number }>({ initial: 0, end: pageSize });
-
-  const { data: totalCounter } = useScaffoldReadContract({
-    contractName: "Finance",
-    functionName: "name",
-    // args: ["0xd8da6bf26964af9d7eed9e03e53415d37aa96045"],
-  });
 
   // Functions
   const getUserNFTs = useCallback(async () => {
@@ -66,8 +59,6 @@ const Home: NextPage = () => {
 
   return (
     <section className="flex flex-col w-full h-full">
-      <div>{totalCounter?.toString()}</div>
-
       <AnimatePresence>
         {userNfts !== null && userNfts !== undefined && userNfts.length > 0 && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>

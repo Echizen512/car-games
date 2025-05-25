@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     Finance: {
-      address: "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+      address: "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
       abi: [
         {
           inputs: [
@@ -124,13 +124,55 @@ const deployedContracts = {
           type: "event",
         },
         {
-          inputs: [],
-          name: "name",
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_nftId",
+              type: "uint256",
+            },
+          ],
+          name: "getOil",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "currentOil",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bool",
+                  name: "exist",
+                  type: "bool",
+                },
+              ],
+              internalType: "struct Finance.Dios",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "id",
+              type: "uint256",
+            },
+          ],
+          name: "nftOil",
           outputs: [
             {
               internalType: "uint256",
-              name: "name",
+              name: "currentOil",
               type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "exist",
+              type: "bool",
             },
           ],
           stateMutability: "view",

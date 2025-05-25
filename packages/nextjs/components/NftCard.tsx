@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import ParticleBackground from "./ParticleBackground";
@@ -5,6 +7,7 @@ import VirtualRace from "./VirtualRace";
 import { AnimatePresence } from "motion/react";
 import { NextPage } from "next";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { INftAttribute, INftDataSea, INftPreview } from "~~/types/nftData.entity";
 
 type NftCardProps = {
@@ -20,6 +23,12 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
   const [showRace, setShowRace] = useState(false);
   const [selectedShip, setSelectedShip] = useState<any | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  const { data: ayuda } = useScaffoldReadContract({
+    contractName: "Finance",
+    functionName: "getOil",
+    args: [BigInt(data.identifier)],
+  });
 
   //functions
   const getPreviewNft = useCallback(async () => {
@@ -59,17 +68,29 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
   };
 
   // Card Components
+
+  //TODO: FIX TOTAL OIL
   const NftCardAttributes = (x: INftAttribute, y: number) => {
     const oilLimit = 75;
-    const allStaticsLimit = 80;
+    const allStaticsLimit = 85;
 
     return (
       <div key={y} className="flex flex-col">
         <span className="font-semibold">{x.trait_type.toString()}</span>
         <div className="flex items-center justify-center gap-5">
-          <progress className="progress progress-success" value={x.value} max="100" />
+          <progress
+            className="progress progress-success"
+            value={ayuda === undefined ? x.value : parseInt(ayuda?.toString() ?? "0")}
+            // value={x.value}
+            max={x.trait_type === "oil" ? "75" : x.trait_type === "power" || x.trait_type === "speed" ? "100" : "85"}
+          />
           <span className="font-semibold">
-            {x.value}/{x.trait_type === "oil" ? oilLimit : allStaticsLimit}
+            {x.value}/
+            {x.trait_type === "oil"
+              ? oilLimit
+              : x.trait_type === "power" || x.trait_type === "speed"
+                ? "100"
+                : allStaticsLimit}
           </span>
         </div>
       </div>

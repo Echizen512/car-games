@@ -7,19 +7,21 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract Finance is Ownable {
     IERC20 public ronKeToken;
 
-    //structs
-    struct Oil {
-        
+    //TODO: Change this
+
+    struct Dios {
+        uint256 currentOil;
+        bool exist;
     }
+    
+    mapping(uint id => Dios) public nftOil;
+
     // struct Reward {
     //     uint256 amount;
     //     uint256 timestamp;
     // }
 
-    // mapping(address =>  Reward[]) public rewards; 
-
-    uint256 number = 5;
-    uint256 currentTime;
+    // mapping(address =>  Reward[]) public rewards;
 
     //events
     event RaceStarted(address indexed player);
@@ -28,15 +30,14 @@ contract Finance is Ownable {
 
     constructor(address initialOwner, address _ronKeToken) Ownable(initialOwner) {
         ronKeToken = IERC20(_ronKeToken);
-        currentTime = block.timestamp + 2 minutes;
     }
 
     function startRace() external {
         emit RaceStarted(msg.sender);
     }
 
-    function getNumber() view public returns (uint256) {
-        return currentTime;
+    function getOil(uint256 _nftId) public view returns (Dios memory)  {
+        return nftOil[_nftId];
     }
 
     // function grantReward(address player, uint8 position) external onlyOwner {

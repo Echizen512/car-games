@@ -9,6 +9,7 @@ import NftCard from "~~/components/NftCard";
 import PlaceHolderNftCard from "~~/components/PlaceHolderNftCard";
 import { INftDataSea, INftDataSeaResponse } from "~~/types/nftData.entity";
 import { BrowserProvider, Contract, formatUnits } from "ethers";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 const Home: NextPage = () => {
   const { address } = useAccount();
@@ -25,10 +26,11 @@ const Home: NextPage = () => {
   const rarityTypes = ["All", "Common", "Uncommon", "Rare", "Epic"];
   const pageSize = 8;
 
-  const ronKeTokenAddress = "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853";
+  const ronKeTokenAddress = "0x610178dA211FEF7D417bC0e6FeD39F05609AD788";
   const ronKeABI = [
     "function balanceOf(address) view returns (uint256)",
   ];
+
 
   // States
   const [userNfts, setUserNfts] = useState<INftDataSea[] | null>(null);
@@ -74,7 +76,7 @@ const Home: NextPage = () => {
       const contract = new Contract(ronKeTokenAddress, ronKeABI, provider);
 
       const balanceWei = await contract.balanceOf(address);
-      setBalance(formatUnits(balanceWei, 18)); // Formateo a decimales estándar
+      setBalance(formatUnits(balanceWei, 18)); 
     };
 
     getBalance();
@@ -91,6 +93,7 @@ const Home: NextPage = () => {
     </h2>
   </div>
 </div>
+
 
       <AnimatePresence>
         {userNfts !== null && userNfts !== undefined && userNfts.length > 0 && (

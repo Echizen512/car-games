@@ -13,6 +13,8 @@ contract Finance is Ownable {
     }
 
     mapping(address => Reward[]) public rewards; // Record of earnings per user
+
+    //events
     event RaceStarted(address indexed player);
     event RewardGiven(address indexed player, uint256 amount);
     event Withdrawal(address indexed player, uint256 amount, uint256 penalty);

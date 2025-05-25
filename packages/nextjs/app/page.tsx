@@ -7,6 +7,7 @@ import { useAccount } from "wagmi";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import NftCard from "~~/components/NftCard";
 import PlaceHolderNftCard from "~~/components/PlaceHolderNftCard";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { INftDataSea, INftDataSeaResponse } from "~~/types/nftData.entity";
 
 const Home: NextPage = () => {
@@ -29,6 +30,13 @@ const Home: NextPage = () => {
   const [loaderNft, setLoaderNft] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [currentViewNft, setCurrentViewNft] = useState<{ initial: number; end: number }>({ initial: 0, end: pageSize });
+
+  //smart contract
+  const { data: userBalance } = useScaffoldReadContract({
+    contractName: "RonKe",
+    functionName: "balanceOf",
+    args: [address],
+  });
 
   // Functions
   const getUserNFTs = useCallback(async () => {
@@ -63,7 +71,7 @@ const Home: NextPage = () => {
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-xl rounded-lg p-4 w-auto">
           <h2 className=" font-semibold flex items-center">
             Total Token Balance:
-            {/* <span className=" font-bold text-yellow-300"> {balance.toString()} RKS</span> */}
+            <span className=" font-bold text-yellow-300"> {userBalance?.toString()} RKS</span>
           </h2>
         </div>
       </div>

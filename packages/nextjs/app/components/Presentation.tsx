@@ -14,7 +14,7 @@ const Presentation: NextPage = () => {
   }, []);
 
   return (
-    <main className="flex flex-col flex-1 justify-center items-center">
+    <main className="flex flex-col flex-1 justify-center items-center ovh">
       {!load ? (
         <div className="w-screen h-screen flex justify-center items-center">
           <span className="loading loading-spinner loading-xl scale-105" />
@@ -22,7 +22,7 @@ const Presentation: NextPage = () => {
       ) : (
         <>
           <motion.section
-            className={`h-screen w-full flex flex-col justify-end pointer-events-none overflow-x-hidden`}
+            className={`h-screen w-full flex flex-col justify-end pointer-events-none`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{
@@ -55,7 +55,7 @@ const Presentation: NextPage = () => {
             </motion.article>
 
             {/* ships */}
-            <div className="flex justify-center top-14">
+            <div className="flex justify-center mb-36">
               <motion.img
                 initial={{ x: -800 }}
                 animate={{ x: 0, y: 20 }}
@@ -66,7 +66,7 @@ const Presentation: NextPage = () => {
                 }}
                 src="/NFT.png"
                 alt="ship"
-                className=" w-36 h-36 mx-12"
+                className="w-36 h-36 mx-12"
               />
 
               <motion.img
@@ -96,17 +96,13 @@ const Presentation: NextPage = () => {
             </div>
 
             {/* Wave */}
-            <Image src="/wave-haikei.png" width={1000} height={500} alt="wave" className="w-full h-40 absolute" />
-
-            <div className="w-full h-32 relative z-10">
-              <div className="w-full absolute bottom-0 flex justify-center items-center z-0">
-                <motion.span
-                  animate={{ scale: [1, 0.8, 1], y: [-6, 0, -6] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="btn btn-circle btn-ghost z-0"
-                ></motion.span>
-              </div>
-            </div>
+            <Image
+              src="/wave-haikei.png"
+              width={1000}
+              height={500}
+              alt="wave"
+              className="w-full h-40 absolute bottom-0"
+            />
           </motion.section>
         </>
       )}

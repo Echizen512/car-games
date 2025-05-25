@@ -40,7 +40,7 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
       ) : (
         <>
           <Presentation />
-          <Footer />
+          <Footer paddingFooter={false} />
         </>
       )}
     </>

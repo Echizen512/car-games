@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { NextPage } from "next";
 import { hardhat } from "viem/chains";
 import { CurrencyDollarIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { SwitchTheme } from "~~/components/SwitchTheme";
@@ -7,16 +8,16 @@ import { Faucet } from "~~/components/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 import { useGlobalState } from "~~/services/store/store";
 
-/**
- * Site footer
- */
-export const Footer = () => {
+type FooterPros = {
+  paddingFooter?: boolean;
+};
+export const Footer: NextPage<FooterPros> = ({ paddingFooter = true }) => {
   const nativeCurrencyPrice = useGlobalState(state => state.nativeCurrency.price);
   const { targetNetwork } = useTargetNetwork();
   const isLocalNetwork = targetNetwork.id === hardhat.id;
 
   return (
-    <div className="min-h-0 py-5 px-1 mb-11 lg:mb-0">
+    <div className={`${paddingFooter ? "py-5" : ""} min-h-0 px-1 mb-11 lg:mb-0`}>
       <div>
         <div className="fixed flex justify-between items-center w-full z-10 p-4 bottom-0 left-0 pointer-events-none">
           <div className="flex flex-col md:flex-row gap-2 pointer-events-auto">

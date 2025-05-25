@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
 import Confetti from "react-confetti";
 
 interface Ship {
@@ -266,7 +267,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
   };
 
   return (
-    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-black/50 flex items-center justify-center w-[50vw] h-[90vh] overflow-auto rounded-lg z-50">
+    <motion.div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-black/50 flex items-center justify-center w-[50vw] h-[90vh] overflow-auto rounded-lg z-50">
       <style>{styles}</style>
       {showConfetti && (
         <Confetti
@@ -292,12 +293,11 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               ref={videoRef}
               src="/fondo.mp4"
               className="w-full h-full object-fill track mt-8 ml-8, ml-8"
-              style={{ position: "absolute",  }}
+              style={{ position: "absolute" }}
               preload="auto"
               muted
               playsInline
             />
-
 
             {isShipVisible && (
               <img
@@ -332,8 +332,9 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               return (
                 <div
                   key={`${racer.id}-${triggerAnimation}`}
-                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${racer.id === ship.id ? "bg-yellow-500/20" : ""
-                    }`}
+                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${
+                    racer.id === ship.id ? "bg-yellow-500/20" : ""
+                  }`}
                   style={{ "--startY": `${translateY}px` } as React.CSSProperties}
                 >
                   {getPositionCircle(racer.position)}
@@ -375,7 +376,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

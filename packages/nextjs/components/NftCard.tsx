@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import ParticleBackground from "./ParticleBackground";
 import VirtualRace from "./VirtualRace";
+import { AnimatePresence } from "motion/react";
 import { NextPage } from "next";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { INftAttribute, INftDataSea, INftPreview } from "~~/types/nftData.entity";
@@ -39,7 +40,6 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
     getPreviewNft();
   }, [getPreviewNft]);
 
-  // Transforma los datos del NFT para que coincidan con la estructura de VirtualRace
   const prepareShipData = () => {
     if (!nftPreview) return null;
 
@@ -89,7 +89,15 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
               #{data.identifier}
             </div>
             {isHovered && nftPreview?.attributes && <ParticleBackground rarity={nftPreview.attributes[0]?.value} />}
-            <Image src={data.image_url} alt={nftPreview.name} fill={true} className="object-contain p-4" />
+            <Image
+              src={data.image_url}
+              alt={nftPreview.name}
+              fill={true}
+              className="object-contain p-4"
+              draggable={false}
+              priority
+              sizes="100%"
+            />
           </>
         ) : (
           <div className="skeleton w-full h-full rounded-b-none" />
@@ -125,77 +133,78 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
     );
   };
 
- return (
-  <>
-    {showRace && selectedShip && <VirtualRace ship={selectedShip} onClose={() => setShowRace(false)} />}
+  return (
+    <>
+      <AnimatePresence>
+        {showRace && selectedShip && <VirtualRace ship={selectedShip} onClose={() => setShowRace(false)} />}
+      </AnimatePresence>
 
-    {loadData ? (
-      <div className="card bg-primary flex-1 shadow-sm rounded-xl h-50 p-5 gap-2 justify-center items-center">
-        <span className="loading loading-spinner loading-xl" />
-        <span className="text-white text-md">Loading...</span>
-      </div>
-    ) : nftPreview === null ? (
-      <div className="card bg-secondary flex-1 shadow-sm rounded-xl h-50 p-5 gap-2 justify-center items-center">
-        <h3 className="font-semibold text-md text-center">Check your internet connection and try again.</h3>
-        <button className="btn btn-primary" onClick={getPreviewNft}>
-          <ArrowPathIcon className="w-4 h-4" /> Reload
-        </button>
-      </div>
-    ) : (
-      (selectedRarity === "all" ||
-        selectedRarity.toLowerCase() === nftPreview?.attributes[0]?.value.toLowerCase()) && (
-        <div className="card bg-base-100 flex-1 shadow-sm rounded-xl overflow-hidden">
-          {ImageContainerCard()}
-          {BadgeRarityCard()}
-          <div className="card-body p-5">
-            <div className="w-full flex flex-col items-center">
-              <h2 className="card-title text-xl font-bold text-center">{nftPreview?.name}</h2>
-            </div>
-            {nftPreview?.attributes?.slice(1).map((x, y) => NftCardAttributes(x, y))}
+      {loadData ? (
+        <div className="card bg-primary flex-1 shadow-sm rounded-xl h-50 p-5 gap-2 justify-center items-center">
+          <span className="loading loading-spinner loading-xl" />
+          <span className="text-white text-md">Loading...</span>
+        </div>
+      ) : nftPreview === null ? (
+        <div className="card bg-secondary flex-1 shadow-sm rounded-xl h-50 p-5 gap-2 justify-center items-center">
+          <h3 className="font-semibold text-md text-center">Check your internet connection and try again.</h3>
+          <button className="btn btn-primary" onClick={getPreviewNft}>
+            <ArrowPathIcon className="w-4 h-4" /> Reload
+          </button>
+        </div>
+      ) : (
+        (selectedRarity === "all" ||
+          selectedRarity.toLowerCase() === nftPreview?.attributes[0]?.value.toLowerCase()) && (
+          <div className="card bg-base-100 flex-1 shadow-sm rounded-xl overflow-hidden">
+            {ImageContainerCard()}
+            {BadgeRarityCard()}
+            <div className="card-body p-5">
+              <div className="w-full flex flex-col items-center">
+                <h2 className="card-title text-xl font-bold text-center">{nftPreview?.name}</h2>
+              </div>
+              {nftPreview?.attributes?.slice(1).map((x, y) => NftCardAttributes(x, y))}
 
-            <div className="grid grid-cols-2 gap-3 mt-5">
-              <button
-                onClick={() => {
-                  setSelectedShip(prepareShipData());
-                  setShowRace(true);
-                }}
-                className="btn btn-success rounded-md font-medium"
-              >
-                Start Virtual Race
-              </button>
-
-              {/* Claim Reward Modal */}
-              <div>
+              <div className="grid grid-cols-2 gap-3 mt-5">
                 <button
-                  className="btn btn-withdraw py-2 rounded-md font-medium opacity-50 cursor-not-allowed"
-                  disabled
-                  onClick={() => setIsOpen(true)}
+                  onClick={() => {
+                    setSelectedShip(prepareShipData());
+                    setShowRace(true);
+                  }}
+                  className="btn btn-success rounded-md font-medium"
                 >
-                  Claim Reward
+                  Start Virtual Race
                 </button>
 
-                {isOpen && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                      <h2 className="text-xl font-semibold mb-4">Coming Soon! 🚀</h2>
-                      <p className="text-lg">The reward claiming feature will be available in the coming days. Stay tuned!</p>
-                      <button
-                        className="mt-4 btn btn-primary py-2 px-4 rounded-md"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        Close
-                      </button>
+                {/* Claim Reward Modal */}
+                <div>
+                  <button
+                    className="btn btn-withdraw w-full py-2 rounded-md font-medium opacity-50 cursor-not-allowed"
+                    disabled
+                    onClick={() => setIsOpen(true)}
+                  >
+                    Claim Reward
+                  </button>
+
+                  {isOpen && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                      <div className="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 className="text-xl font-semibold mb-4">Coming Soon! 🚀</h2>
+                        <p className="text-lg">
+                          The reward claiming feature will be available in the coming days. Stay tuned!
+                        </p>
+                        <button className="mt-4 btn btn-primary py-2 px-4 rounded-md" onClick={() => setIsOpen(false)}>
+                          Close
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )
-    )}
-  </>
-);
-}
+        )
+      )}
+    </>
+  );
+};
 
 export default NftCard;

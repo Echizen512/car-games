@@ -20,24 +20,24 @@ const Home: NextPage = () => {
     rare: "bg-purple-600",
     epic: "bg-orange-500",
   };
+  const rarityTypes = ["All", "Common", "Uncommon", "Rare", "Epic"];
+  const pageSize = 8;
 
   // States
   const [userNfts, setUserNfts] = useState<INftDataSea[] | null>(null);
   const [selectedRarity, setSelectedRarity] = useState<string>("all");
   const [loaderNft, setLoaderNft] = useState<boolean>(false);
-  const rarityTypes = ["All", "Common", "Uncommon", "Rare", "Epic"];
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [currentViewNft, setCurrentViewNft] = useState<{ initial: number; end: number }>({ initial: 0, end: pageSize });
 
   // Functions
   const getUserNFTs = useCallback(async () => {
     try {
       setLoaderNft(true);
-      const req = await fetch(
-        `https://testnets-api.opensea.io/api/v2/chain/sepolia/account/${address}/nfts?collection=fuerza-com`,
-      );
+      const req = await fetch(`api/nft?address=${"0xc8b7aefc4a85bbec9c2e7db9850c56eddd2800b2"}`);
+      console.log(address);
       const res: INftDataSeaResponse = await req.json();
       setUserNfts(res.nfts);
-
-      console.log(res);
     } catch (err) {
       console.log(err);
     } finally {
@@ -50,27 +50,58 @@ const Home: NextPage = () => {
     getUserNFTs();
   }, [getUserNFTs]);
 
+  useEffect(() => {
+    const newInitial = currentPage * pageSize;
+    const newEnd = Math.min(newInitial + pageSize, userNfts?.length ?? 0);
+
+    setCurrentViewNft({ initial: newInitial, end: newEnd });
+  }, [currentPage, userNfts?.length]);
+
   return (
     <section className="flex flex-col w-full h-full">
-      <article className="flex gap-5 mt-2 w-full justify-center">
-        <div className="p-4 mx-auto grid grid-cols-3 sm:flex gap-5 justify-center">
-          {rarityTypes.map((x: string, y: number) => (
-            <button
-              key={y}
-              onClick={() => setSelectedRarity(x.toLowerCase())}
-              className={`btn w-28 text-white font-semibold ${rarityColors[x.toLowerCase()]} ${selectedRarity === x.toLowerCase() ? "ring-2 ring-yellow-400" : ""}`}
-            >
-              {x}
-            </button>
-          ))}
-        </div>
-      </article>
+      <AnimatePresence>
+        {userNfts !== null && userNfts !== undefined && userNfts.length > 0 && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <article className="flex gap-5 mt-2 w-full justify-center">
+              <div className="p-4 mx-auto grid grid-cols-3 sm:flex gap-5 justify-center">
+                {rarityTypes.map((x: string, y: number) => (
+                  <button
+                    key={y}
+                    onClick={() => setSelectedRarity(x.toLowerCase())}
+                    className={`btn w-28 text-white font-semibold ${rarityColors[x.toLowerCase()]} ${selectedRarity === x.toLowerCase() ? "ring-2 ring-yellow-400" : ""}`}
+                  >
+                    {x}
+                  </button>
+                ))}
+              </div>
+            </article>
+
+            <div className="join justify-center w-full">
+              <button
+                onClick={() => setCurrentPage(prev => prev - 1)}
+                className="join-item btn"
+                disabled={currentPage === 0}
+              >
+                «
+              </button>
+              <button className="join-item btn">Page {currentPage + 1}</button>
+              <button
+                onClick={() => setCurrentPage(prev => prev + 1)}
+                className="join-item btn"
+                disabled={currentViewNft.end >= userNfts.length}
+              >
+                »
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {loaderNft ? (
         <article className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 gap-2">
           <PlaceHolderNftCard />
         </article>
-      ) : userNfts === null ? (
+      ) : userNfts === null || userNfts === undefined ? (
         <AnimatePresence>
           <motion.article
             initial={{ opacity: 0 }}
@@ -84,9 +115,10 @@ const Home: NextPage = () => {
           </motion.article>
         </AnimatePresence>
       ) : userNfts.length > 0 ? (
-        <article className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 gap-2">
+        <article className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-5 gap-2">
           {userNfts
             .sort((a: INftDataSea, b: INftDataSea) => parseInt(a.identifier) - parseInt(b.identifier))
+            .slice(currentViewNft.initial, currentViewNft.end)
             .map((x, y) => (
               <NftCard key={y} data={x} selectedRarity={selectedRarity} />
             ))}

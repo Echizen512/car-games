@@ -174,7 +174,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
 
     const handleEnded = () => {
       setPlaybackRate(prev => {
-        const newRate = Math.min(prev + 0.5, 4);
+        const newRate = Math.min(prev + 0.5, 2); 
         video.playbackRate = newRate;
         return newRate;
       });
@@ -183,6 +183,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
         console.error("Error restarting video:", error);
       });
     };
+
 
     video.addEventListener("ended", handleEnded);
     return () => {
@@ -332,9 +333,8 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               return (
                 <div
                   key={`${racer.id}-${triggerAnimation}`}
-                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${
-                    racer.id === ship.id ? "bg-yellow-500/20" : ""
-                  }`}
+                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${racer.id === ship.id ? "bg-yellow-500/20" : ""
+                    }`}
                   style={{ "--startY": `${translateY}px` } as React.CSSProperties}
                 >
                   {getPositionCircle(racer.position)}

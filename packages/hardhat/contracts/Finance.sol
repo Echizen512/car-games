@@ -7,89 +7,119 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract Finance is Ownable {
     IERC20 public ronKeToken;
 
-    //TODO: Change this
+    bytes32 public constant COMMON = "COMMON";
+    bytes32 public constant UNCOMMON = "UNCOMMON";
+    bytes32 public constant RARE = "RARE";
+    bytes32 public constant EPIC = "EPIC";
 
-    struct Dios {
-        uint256 currentOil;
-        bool exist;
-    }
-    
-    mapping(uint id => Dios) public nftOil;
+    mapping(uint256 => uint256) public oilBalances;
+    mapping(uint256 => address) public nftOwner;
+    mapping(address => uint256) public rewards;
 
-    // struct Reward {
-    //     uint256 amount;
-    //     uint256 timestamp;
-    // }
-
-    // mapping(address =>  Reward[]) public rewards;
+    uint256 public maxId;
 
     //events
-    event RaceStarted(address indexed player);
-    event RewardGiven(address indexed player, uint256 amount);
-    event Withdrawal(address indexed player, uint256 amount, uint256 penalty);
+    event RaceStarted(address indexed player, uint256 nftId);
 
-    constructor(address initialOwner, address _ronKeToken) Ownable(initialOwner) {
+    //constructor
+    constructor(address owner, address _ronKeToken) Ownable(owner) {
         ronKeToken = IERC20(_ronKeToken);
     }
 
-    function startRace() external {
-        emit RaceStarted(msg.sender);
+    function setDefaultOil(uint256 _nftID, bytes32 _rarity) private {
+        require(_rarity == COMMON || _rarity == UNCOMMON || _rarity == RARE || _rarity == EPIC, "Wrong rarity");
+
+        if (_rarity == COMMON) {
+            oilBalances[_nftID] = 30;
+        }
+        if (_rarity == UNCOMMON) {
+            oilBalances[_nftID] = 45;
+        }
+        if (_rarity == RARE) {
+            oilBalances[_nftID] = 60;
+        }
+        if (_rarity == EPIC) {
+            oilBalances[_nftID] = 75;
+        }
     }
 
-    function getOil(uint256 _nftId) public view returns (Dios memory)  {
-        return nftOil[_nftId];
+    function raceStart(uint256 _nftID, bytes32 _rarity) public {
+        address player = msg.sender;
+        if (nftOwner[_nftID] == address(0)) {
+            setDefaultOil(_nftID, _rarity);
+            nftOwner[_nftID] = player;
+            oilBalances[_nftID] -= 15;
+            maxId++;
+        } else {
+            nftOwner[_nftID] = player;
+            uint256 currentOil = oilBalances[_nftID];
+            require(currentOil > 0, "Not enough oil");
+            oilBalances[_nftID] -= 15;
+        }
+        emit RaceStarted(player, _nftID);
     }
 
-    // function grantReward(address player, uint8 position) external onlyOwner {
-    //     uint256 rewardAmount;
+    function resetAllNftOwners() public onlyOwner {
+        for (uint256 i = 0; i < maxId; i++) {
+            delete nftOwner[i];
+        }
+    }
 
-    //     if (position == 1) {
-    //         rewardAmount = 8 * 10**18; // 8 RKS
-    //     } else if (position == 2) {
-    //         rewardAmount = 5 * 10**18; // 5 RKS
-    //     } else if (position == 3) {
-    //         rewardAmount = 3 * 10**18; // 3 RKS
-    //     } else {
-    //         rewardAmount = 0; // No reward for fourth place or beyond
-    //     }
 
-    //     require(rewardAmount > 0, "No reward for this position");
-    //     require(ronKeToken.balanceOf(address(this)) >= rewardAmount, "Insufficient funds in contract");
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function grantReward(address player, uint8 position) external onlyOwner {
+        uint256 rewardAmount;
 
-    //     rewards[player].push(Reward(rewardAmount, block.timestamp));
-    //     ronKeToken.transfer(player, rewardAmount);
+        if (position == 1) {
+            rewardAmount = 8 * 10 ** 18; // 8 RKS
+        } else if (position == 2) {
+            rewardAmount = 5 * 10 ** 18; // 5 RKS
+        } else if (position == 3) {
+            rewardAmount = 3 * 10 ** 18; // 3 RKS
+        } else {
+            rewardAmount = 0; // No reward for fourth place or beyond
+        }
 
-    //     emit RewardGiven(player, rewardAmount);
-    // }
+        require(rewardAmount > 0, "No reward for this position");
+        require(ronKeToken.balanceOf(address(this)) >= rewardAmount, "Insufficient funds in contract"); // ???
 
-    // function withdrawEarnings() external {
-    //     uint256 totalAmount = 0;
-    //     uint256 penalty = 0;
-    //     uint256 currentTime = block.timestamp;
+        // rewards[player].push(Reward(rewardAmount, block.timestamp));
+        rewards[player] += rewardAmount;
+        ronKeToken.transfer(player, rewardAmount);
+        emit RewardGiven(player, rewardAmount);
+    }
 
-    //     // Calculate earnings and penalties based on elapsed time
-    //     for (uint256 i = 0; i < rewards[msg.sender].length; i++) {
-    //         uint256 timeElapsed = currentTime - rewards[msg.sender][i].timestamp;
-    //         uint256 amount = rewards[msg.sender][i].amount;
+    function withdrawEarnings() external {
+        uint256 totalAmount = 0;
+        uint256 penalty = 0;
+        uint256 currentTime = block.timestamp;
 
-    //         if (timeElapsed < 24 hours) {
-    //             penalty += (amount * 50) / 100; // 50% penalty
-    //         } else if (timeElapsed < 48 hours) {
-    //             penalty += (amount * 30) / 100; // 30% penalty
-    //         } else if (timeElapsed < 72 hours) {
-    //             penalty += (amount * 20) / 100; // 20% penalty
-    //         }
+        // Calculate earnings and penalties based on elapsed time
+        for (uint256 i = 0; i < rewards[msg.sender].length; i++) {
+            uint256 timeElapsed = currentTime - rewards[msg.sender][i].timestamp;
+            uint256 amount = rewards[msg.sender][i].amount;
 
-    //         totalAmount += amount;
-    //     }
+            if (timeElapsed < 24 hours) {
+                penalty += (amount * 50) / 100; // 50% penalty
+            } else if (timeElapsed < 48 hours) {
+                penalty += (amount * 30) / 100; // 30% penalty
+            } else if (timeElapsed < 72 hours) {
+                penalty += (amount * 20) / 100; // 20% penalty
+            }
 
-    //     require(totalAmount > 0, "No earnings available for withdrawal");
-    //     uint256 finalAmount = totalAmount - penalty;
+            totalAmount += amount;
+        }
 
-    //     rewards[msg.sender] = new Reward[](0); // Clear user's earnings history
-    //     ronKeToken.transfer(owner(), penalty); // Transfer penalty amount to contract owner
-    //     ronKeToken.transfer(msg.sender, finalAmount);
+        require(totalAmount > 0, "No earnings available for withdrawal");
+        uint256 finalAmount = totalAmount - penalty;
 
-    //     emit Withdrawal(msg.sender, finalAmount, penalty);
-    // }
+        rewards[msg.sender] = new Reward[](0); // Clear user's earnings history
+        ronKeToken.transfer(owner(), penalty); // Transfer penalty amount to contract owner
+        ronKeToken.transfer(msg.sender, finalAmount);
+
+        emit Withdrawal(msg.sender, finalAmount, penalty);
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 }

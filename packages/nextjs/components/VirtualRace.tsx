@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { motion } from "motion/react";
 import Confetti from "react-confetti";
 
@@ -34,23 +35,6 @@ interface VirtualRaceProps {
   ship: Ship;
   onClose: () => void;
 }
-
-const styles = `
-  @keyframes flipReplace {
-    0% { transform: perspective(500px) rotateX(0deg); opacity: 1; }
-    50% { transform: perspective(500px) rotateX(180deg); opacity: 0.5; }
-    100% { transform: perspective(500px) rotateX(360deg); opacity: 1; }
-  }
-
-  @keyframes movePosition {
-    0% { transform: translateY(var(--startY)); }
-    100% { transform: translateY(0); }
-  }
-
-  .animate-flip-move {
-    animation: flipReplace 0.5s ease-in-out, movePosition 0.5s ease-in-out;
-  }
-`;
 
 const configurations = [
   ["Common", "Common", "Epic"],
@@ -132,16 +116,31 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
   const previousPositionsRef = useRef<RacerPosition[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playbackRate, setPlaybackRate] = useState(1);
-  const shipSize = 150;
 
   useEffect(() => {
-    if (ship) {
-      console.log("NFT seleccionado en VirtualRace:", ship);
-      setPositions(opponents(ship));
-    }
-  }, [ship]);
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleEnded = () => {
+      setPlaybackRate(prev => {
+        const newRate = Math.min(prev + 0.5, 2);
+        video.playbackRate = newRate;
+        return newRate;
+      });
+      video.currentTime = 0;
+      video.play().catch(error => {
+        console.error("Error restarting video:", error);
+      });
+    };
+
+    video.addEventListener("ended", handleEnded);
+    return () => {
+      video.removeEventListener("ended", handleEnded);
+    };
+  }, []);
 
   useEffect(() => {
+    if (ship) setPositions(opponents(ship));
     setPositions(opponents(ship));
   }, [ship]);
 
@@ -167,29 +166,6 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
       video.pause();
     }
   }, [isRacing, raceTime]);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const handleEnded = () => {
-      setPlaybackRate(prev => {
-        const newRate = Math.min(prev + 0.5, 2); 
-        video.playbackRate = newRate;
-        return newRate;
-      });
-      video.currentTime = 0;
-      video.play().catch(error => {
-        console.error("Error restarting video:", error);
-      });
-    };
-
-
-    video.addEventListener("ended", handleEnded);
-    return () => {
-      video.removeEventListener("ended", handleEnded);
-    };
-  }, []);
 
   useEffect(() => {
     if (!isRacing) return;
@@ -250,10 +226,6 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
     return positionDiff * 60;
   };
 
-  const toggleShipVisibility = () => {
-    setIsShipVisible(prev => !prev);
-  };
-
   const getPositionCircle = (position: number) => {
     switch (position) {
       case 1:
@@ -267,9 +239,23 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
     }
   };
 
+  const handleWinner = async () => {
+    try {
+      const req = await fetch("api/reward");
+      const res = await req.json();
+
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    handleWinner();
+  }, []);
+
   return (
-    <motion.div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-black/50 flex items-center justify-center w-[50vw] h-[90vh] overflow-auto rounded-lg z-50">
-      <style>{styles}</style>
+    <motion.div className="fixed top-0 left-0 bg-black/60 flex items-center justify-center w-screen h-screen overflow-hidden z-50">
       {showConfetti && (
         <Confetti
           width={window.innerWidth}
@@ -278,13 +264,15 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
           recycle={false}
         />
       )}
-      <div className="bg-white rounded-lg w-full max-w-3xl">
-        <div className="bg-white p-4 rounded-t-lg h-[400px] w-full relative">
+
+      <div className="rounded-lg w-full max-w-3xl">
+        <div className="rounded-t-lg h-80 w-full relative">
+          {/* container video */}
           <div className="relative h-full w-full flex items-center justify-center">
             {raceTime <= 0 && (
               <button
-                onClick={toggleShipVisibility}
-                className="absolute top-4 left-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors z-30"
+                onClick={() => setIsShipVisible(!isShipVisible)}
+                className="btn btn-accent absolute top-4 left-4  z-30"
               >
                 {isShipVisible ? "Hide Ship" : "Show Ship"}
               </button>
@@ -293,32 +281,37 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
             <video
               ref={videoRef}
               src="/fondo.mp4"
-              className="w-full h-full object-fill track mt-8 ml-8, ml-8"
-              style={{ position: "absolute" }}
+              className="w-full h-full object-fill"
               preload="auto"
               muted
               playsInline
             />
 
             {isShipVisible && (
-              <img
-                src={ship.image || "https://via.placeholder.com/80?text=Ship"}
+              <motion.img
+                animate={{
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                src={ship.image ?? ""}
                 alt={ship.name}
-                className="absolute top-[200px] left-[200px] z-20 ship"
-                style={{ width: `${shipSize}px`, height: `${shipSize}px`, zIndex: 20 }}
-                onError={e => (e.currentTarget.src = "https://via.placeholder.com/80?text=Ship+Error")}
+                className="absolute bottom-[40px] left-[100px]"
+                width={150}
+                height={150}
               />
             )}
-
-            {countdown !== 0 && <div className="absolute inset-0 bg-gray-500/30 z-40"></div>}
           </div>
           {countdown !== 0 && (
             <div className="absolute inset-0 flex items-center justify-center z-50">
-              <span className="text-6xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">{countdown}</span>
+              <span className="text-5xl font-bold text-white">{countdown}</span>
             </div>
           )}
           {raceTime <= 0 && playerPosition && (
-            <div className="absolute inset-0 flex items-center justify-center z-50">
+            <div className="absolute inset-0 flex items-center justify-center">
               <span className="text-6xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
                 {playerPosition}
               </span>
@@ -326,15 +319,16 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
           )}
         </div>
 
-        <div className="bg-[#1a1a1a] p-4">
+        <div className="bg-neutral-800 p-4">
           <div className="space-y-2">
             {positions.map(racer => {
               const translateY = getTranslateY(racer);
               return (
                 <div
                   key={`${racer.id}-${triggerAnimation}`}
-                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${racer.id === ship.id ? "bg-yellow-500/20" : ""
-                    }`}
+                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${
+                    racer.id === ship.id ? "bg-yellow-500/20" : ""
+                  }`}
                   style={{ "--startY": `${translateY}px` } as React.CSSProperties}
                 >
                   {getPositionCircle(racer.position)}
@@ -364,13 +358,10 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
           </div>
         </div>
 
-        <div className="bg-[#1a1a1a] p-4 rounded-b-lg flex items-center justify-between">
+        <div className="bg-neutral-800 p-4 rounded-b-lg flex items-center justify-between">
           <div className="text-white text-xl font-medium">Time: {raceTime}s</div>
           {raceTime <= 0 && (
-            <button
-              onClick={onClose}
-              className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition-colors"
-            >
+            <button onClick={onClose} className="btn btn-error">
               Exit Race
             </button>
           )}

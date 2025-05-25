@@ -7,7 +7,7 @@ import VirtualRace from "./VirtualRace";
 import { AnimatePresence } from "motion/react";
 import { NextPage } from "next";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { INftAttribute, INftDataSea, INftPreview } from "~~/types/nftData.entity";
 
 type NftCardProps = {
@@ -19,16 +19,45 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
   //states
   const [nftPreview, setNftPreview] = useState<INftPreview | null>(null);
   const [loadData, setLoadData] = useState<boolean>(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [showRace, setShowRace] = useState(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [showRace, setShowRace] = useState<boolean>(false);
   const [selectedShip, setSelectedShip] = useState<any | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { data: ayuda } = useScaffoldReadContract({
+  //smart contract
+  const { data: isOwner } = useScaffoldReadContract({
     contractName: "Finance",
-    functionName: "getOil",
+    functionName: "nftOwner",
     args: [BigInt(data.identifier)],
   });
+
+  const { data: oilBalance } = useScaffoldReadContract({
+    contractName: "Finance",
+    functionName: "oilBalances",
+    args: [BigInt(data.identifier)],
+  });
+
+  const { data: rarityCommon } = useScaffoldReadContract({
+    contractName: "Finance",
+    functionName: "COMMON",
+  });
+
+  const { data: rarityUncommon } = useScaffoldReadContract({
+    contractName: "Finance",
+    functionName: "UNCOMMON",
+  });
+
+  const { data: rarityRare } = useScaffoldReadContract({
+    contractName: "Finance",
+    functionName: "RARE",
+  });
+
+  const { data: rarityEpic } = useScaffoldReadContract({
+    contractName: "Finance",
+    functionName: "EPIC",
+  });
+
+  const { writeContractAsync: writeFinancetAsync } = useScaffoldWriteContract({ contractName: "Finance" });
 
   //functions
   const getPreviewNft = useCallback(async () => {
@@ -43,11 +72,6 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
       setLoadData(false);
     }
   }, [data.metadata_url]);
-
-  //effects
-  useEffect(() => {
-    getPreviewNft();
-  }, [getPreviewNft]);
 
   const prepareShipData = () => {
     if (!nftPreview) return null;
@@ -67,36 +91,44 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
     };
   };
 
-  // Card Components
+  const getRarity = () => {
+    const rarity = nftPreview?.attributes[0]?.value.toLowerCase();
+    let data: `0x${string}` = "0x0";
 
-  //TODO: FIX TOTAL OIL
-  const NftCardAttributes = (x: INftAttribute, y: number) => {
-    const oilLimit = 75;
-    const allStaticsLimit = 85;
+    switch (rarity) {
+      case "common":
+        data = rarityCommon ?? "0x0";
+      case "uncommon":
+        data = rarityUncommon ?? "0x0";
+      case "epic":
+        data = rarityRare ?? "0x0";
+      case "rare":
+        data = rarityEpic ?? "0x0";
+    }
 
-    return (
-      <div key={y} className="flex flex-col">
-        <span className="font-semibold">{x.trait_type.toString()}</span>
-        <div className="flex items-center justify-center gap-5">
-          <progress
-            className="progress progress-success"
-            value={ayuda === undefined ? x.value : parseInt(ayuda?.toString() ?? "0")}
-            // value={x.value}
-            max={x.trait_type === "oil" ? "75" : x.trait_type === "power" || x.trait_type === "speed" ? "100" : "85"}
-          />
-          <span className="font-semibold">
-            {x.value}/
-            {x.trait_type === "oil"
-              ? oilLimit
-              : x.trait_type === "power" || x.trait_type === "speed"
-                ? "100"
-                : allStaticsLimit}
-          </span>
-        </div>
-      </div>
-    );
+    return data;
   };
 
+  const handleStartRace = async () => {
+    try {
+      await writeFinancetAsync({
+        functionName: "raceStart",
+        args: [BigInt(parseInt(data.identifier)), getRarity()],
+      });
+
+      setSelectedShip(prepareShipData());
+      setShowRace(true);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  //effects
+  useEffect(() => {
+    getPreviewNft();
+  }, [getPreviewNft]);
+
+  // Card Components
   const ImageContainerCard = () => {
     return (
       <article
@@ -124,6 +156,31 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
           <div className="skeleton w-full h-full rounded-b-none" />
         )}
       </article>
+    );
+  };
+
+  const NftCardAttributes = (x: INftAttribute, y: number) => {
+    const oilLimit = 75;
+    const allStaticsLimit = 85;
+
+    const oil = isOwner === undefined || isOwner.startsWith("0x000000") ? x.value : oilBalance?.toString();
+
+    return (
+      <div key={y} className="flex flex-col">
+        <span className="font-semibold">{x.trait_type.toString()}</span>
+        <div className="flex items-center justify-center gap-5">
+          <progress
+            className="progress progress-success"
+            value={x.trait_type === "oil" ? oil : x.value}
+            max={x.trait_type === "oil" ? "75" : x.trait_type === "power" || x.trait_type === "speed" ? "100" : "85"}
+          />
+          <span className="font-semibold">
+            {x.trait_type === "oil"
+              ? `${oil}/${oilLimit}`
+              : `${x.value}/${x.trait_type === "power" || x.trait_type === "speed" ? "100" : allStaticsLimit}`}
+          </span>
+        </div>
+      </div>
     );
   };
 
@@ -185,13 +242,7 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
               {nftPreview?.attributes?.slice(1).map((x, y) => NftCardAttributes(x, y))}
 
               <div className="grid grid-cols-2 gap-3 mt-5">
-                <button
-                  onClick={() => {
-                    setSelectedShip(prepareShipData());
-                    setShowRace(true);
-                  }}
-                  className="btn btn-success rounded-md font-medium"
-                >
+                <button onClick={handleStartRace} className="btn btn-success rounded-md font-medium">
                   Start Virtual Race
                 </button>
 

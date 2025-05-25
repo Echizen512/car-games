@@ -25,7 +25,8 @@ const deployFinance: DeployFunction = async function (hre: HardhatRuntimeEnviron
   await deploy("Finance", {
     from: deployer,
     // Contract constructor arguments
-    args: ["0xa76e496B1b345ED5063e004fa7094283E67b3855", "0xa76e496B1b345ED5063e004fa7094283E67b3855"],
+    // args: ["0xa76e496B1b345ED5063e004fa7094283E67b3855", "0xa76e496B1b345ED5063e004fa7094283E67b3855"],
+    args: ["0x545eC13A0D736474BCF62693322168f161a00447"],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -41,4 +42,4 @@ export default deployFinance;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags YourContract
-deployFinance.tags = ["RoninZodiacs"];
+deployFinance.tags = ["Finance"];

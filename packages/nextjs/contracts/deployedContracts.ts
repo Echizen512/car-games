@@ -7,18 +7,13 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     Finance: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
       abi: [
         {
           inputs: [
             {
               internalType: "address",
-              name: "initialOwner",
-              type: "address",
-            },
-            {
-              internalType: "address",
-              name: "_ronKeToken",
+              name: "owner",
               type: "address",
             },
           ],
@@ -75,6 +70,12 @@ const deployedContracts = {
               name: "player",
               type: "address",
             },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "nftId",
+              type: "uint256",
+            },
           ],
           name: "RaceStarted",
           type: "event",
@@ -124,31 +125,65 @@ const deployedContracts = {
           type: "event",
         },
         {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "_nftId",
-              type: "uint256",
-            },
-          ],
-          name: "getOil",
+          inputs: [],
+          name: "COMMON",
           outputs: [
             {
-              components: [
-                {
-                  internalType: "uint256",
-                  name: "currentOil",
-                  type: "uint256",
-                },
-                {
-                  internalType: "bool",
-                  name: "exist",
-                  type: "bool",
-                },
-              ],
-              internalType: "struct Finance.Dios",
+              internalType: "bytes32",
               name: "",
-              type: "tuple",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "EPIC",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "RARE",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "UNCOMMON",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "maxId",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
             },
           ],
           stateMutability: "view",
@@ -158,21 +193,35 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "uint256",
-              name: "id",
+              name: "",
               type: "uint256",
             },
           ],
-          name: "nftOil",
+          name: "nftOwner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "oilBalances",
           outputs: [
             {
               internalType: "uint256",
-              name: "currentOil",
+              name: "",
               type: "uint256",
-            },
-            {
-              internalType: "bool",
-              name: "exist",
-              type: "bool",
             },
           ],
           stateMutability: "view",
@@ -192,6 +241,24 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_nftID",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "_rarity",
+              type: "bytes32",
+            },
+          ],
+          name: "raceStart",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
           inputs: [],
           name: "renounceOwnership",
           outputs: [],
@@ -200,20 +267,7 @@ const deployedContracts = {
         },
         {
           inputs: [],
-          name: "ronKeToken",
-          outputs: [
-            {
-              internalType: "contract IERC20",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "startRace",
+          name: "resetAllNftOwners",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -239,7 +293,7 @@ const deployedContracts = {
       },
     },
     RonKe: {
-      address: "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
+      address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
       abi: [
         {
           inputs: [

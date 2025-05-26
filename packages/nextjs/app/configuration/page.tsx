@@ -1,21 +1,29 @@
 "use client";
 
-import { NextPage } from "next";
 import { useState } from "react";
+import { NextPage } from "next";
+import { formatEther } from "viem";
 import { useAccount } from "wagmi";
 import DialogOnlyAdmin from "~~/components/DialogOnlyAdmin";
+import { IntegerInput } from "~~/components/scaffold-eth";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 const Configuration: NextPage = () => {
   const { address } = useAccount();
 
-  // Obtener el propietario del contrato
+  //states
+  const [first, setFirst] = useState("");
+  const [second, setSecond] = useState("");
+  const [third, setThird] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Smart contract
   const { data: owner } = useScaffoldReadContract({
     contractName: "Finance",
     functionName: "owner",
   });
 
-  // Obtener recompensas actuales
   const { data: firstReward } = useScaffoldReadContract({
     contractName: "Finance",
     functionName: "firstPlaceReward",
@@ -31,18 +39,7 @@ const Configuration: NextPage = () => {
     functionName: "thirdPlaceReward",
   });
 
-  // Función para actualizar recompensas
-  const { writeAsync: updateRewards } = useScaffoldWriteContract({
-    contractName: "Finance",
-    functionName: "updateRewards",
-  });
-
-  // Estado para los nuevos valores
-  const [first, setFirst] = useState("");
-  const [second, setSecond] = useState("");
-  const [third, setThird] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { writeContractAsync: writeFinanceAsync } = useScaffoldWriteContract({ contractName: "Finance" });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,11 +47,13 @@ const Configuration: NextPage = () => {
     setMessage("");
 
     try {
-      await updateRewards({
+      await writeFinanceAsync({
+        functionName: "updateRewards",
         args: [BigInt(first), BigInt(second), BigInt(third)],
       });
       setMessage("Rewards updated successfully ✅");
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       setMessage("Error updating rewards ❌");
     }
 
@@ -62,55 +61,85 @@ const Configuration: NextPage = () => {
   };
 
   return (
-    <section className="flex flex-col justify-center items-center">
+    <section className="flex flex-col justify-center items-center h-full w-full">
       {address !== owner ? (
         <DialogOnlyAdmin />
       ) : (
-        <div className="card p-6 shadow-lg rounded-lg bg-primary mt-6">
-          <h1 className="text-2xl font-bold mb-4 text-center">Configuration</h1>
+        <div className="card card-border bg-base-100 w-4/12 mt-6">
+          <div className="card-body justify-center items-center">
+            <h2 className="card-title">Place Reward</h2>
+            <div className="mb-4">
+              <p>
+                <strong>Actual First Place Reward:</strong> {formatEther(firstReward ?? 0n)}RKS
+              </p>
+              <p>
+                <strong>Actual Second Place Reward:</strong> {formatEther(secondReward ?? 0n)}RKS
+              </p>
+              <p>
+                <strong>Actual Third Place Reward:</strong> {formatEther(thirdReward ?? 0n)}RKS
+              </p>
+            </div>
 
-          <div className="mb-4">
-            <p><strong>Actual First Place Reward:</strong> {firstReward?.toString()}</p>
-            <p><strong>Actual Second Place Reward:</strong> {secondReward?.toString()}</p>
-            <p><strong>Actual Third Place Reward:</strong> {thirdReward?.toString()}</p>
+            <form onSubmit={handleSubmit} className="gap-5 w-full flex flex-col">
+              <div>
+                <label className="ms-2">First Place Reward</label>
+                <IntegerInput
+                  value={first}
+                  onChange={updatedTxValue => {
+                    setFirst(updatedTxValue);
+                  }}
+                  placeholder="value (wei)"
+                />
+              </div>
+
+              <div>
+                <label className="ms-2">Second Place Reward</label>
+                <IntegerInput
+                  value={second}
+                  onChange={updatedTxValue => {
+                    setSecond(updatedTxValue);
+                  }}
+                  placeholder="value (wei)"
+                />
+              </div>
+
+              <div>
+                <label className="ms-2">Third Place Reward</label>
+                <IntegerInput
+                  value={third}
+                  onChange={updatedTxValue => {
+                    setThird(updatedTxValue);
+                  }}
+                  placeholder="value (wei)"
+                />
+              </div>
+
+              <div className="card-actions justify-center">
+                <button className="btn btn-primary" disabled={loading} type="submit">
+                  {loading ? "Updating..." : "Update Rewards"}
+                </button>
+              </div>
+            </form>
           </div>
-
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-            <label>First Place Reward</label>
-            <input
-              type="number"
-              value={first}
-              onChange={(e) => setFirst(e.target.value)}
-              className="border rounded p-2"
-            />
-
-            <label>Second Place Reward</label>
-            <input
-              type="number"
-              value={second}
-              onChange={(e) => setSecond(e.target.value)}
-              className="border rounded p-2"
-            />
-
-            <label>Third Place Reward</label>
-            <input
-              type="number"
-              value={third}
-              onChange={(e) => setThird(e.target.value)}
-              className="border rounded p-2"
-            />
-
-            <button
-              type="submit"
-              className="mt-4 bg-secondary text-white p-2 rounded"
-              disabled={loading}
-            >
-              {loading ? "Updating..." : "Update Rewards"}
-            </button>
-          </form>
-
-          {message && <p className="mt-4 text-green-500">{message}</p>}
         </div>
+
+        // <div className="card p-6 shadow-lg rounded-lg bg-primary mt-6">
+        //   <h1 className="text-2xl font-bold mb-4 text-center">Configuration</h1>
+
+        //   <div className="mb-4">
+        //     <p>
+        //       <strong>Actual First Place Reward:</strong> {firstReward?.toString()}
+        //     </p>
+        //     <p>
+        //       <strong>Actual Second Place Reward:</strong> {secondReward?.toString()}
+        //     </p>
+        //     <p>
+        //       <strong>Actual Third Place Reward:</strong> {thirdReward?.toString()}
+        //     </p>
+        //   </div>
+
+        //   {message && <p className="mt-4 text-green-500">{message}</p>}
+        // </div>
       )}
     </section>
   );

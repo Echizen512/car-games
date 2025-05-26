@@ -238,20 +238,20 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
     }
   };
 
-  const handleWinner = async () => {
-    try {
-      const req = await fetch("api/reward");
-      const res = await req.json();
+  // const handleWinner = async () => {
+  //   try {
+  //     const req = await fetch("api/reward");
+  //     const res = await req.json();
 
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  //     console.log(res);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
-  useEffect(() => {
-    handleWinner();
-  }, []);
+  // useEffect(() => {
+  //   handleWinner();
+  // }, []);
 
   return (
     <motion.div className="fixed top-0 left-0 bg-black/60 flex items-center justify-center w-screen h-screen overflow-hidden z-50">
@@ -312,13 +312,13 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               />
             )}
           </div>
-          {countdown !== "0" && (
+          {countdown !== 0 && (
             <div className="absolute inset-0 flex items-center justify-center z-50">
-              <span className="text-5xl font-bold text-white">{countdown}</span>
+              <span className="text-5xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">{countdown}</span>
             </div>
           )}
-          {raceTime <= 0 && playerPosition && (
-            <div className="absolute inset-0 flex items-center justify-center">
+          {raceTime === 0 && playerPosition && (
+            <div className="absolute inset-0 flex items-center justify-center z-50">
               <span className="text-6xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
                 {playerPosition}
               </span>

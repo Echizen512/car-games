@@ -81,6 +81,7 @@ contract Finance is Ownable {
         }
     }
 
+    //TODO: GAP THIS
     function updateRewards(uint256 _first, uint256 _second, uint256 _third) external onlyOwner {
         firstPlaceReward = _first;
         secondPlaceReward = _second;

@@ -132,7 +132,7 @@ const Home: NextPage = () => {
             </button>
           </motion.article>
         </AnimatePresence>
-      ) : userNfts.length > 0 ? (
+      ) : userNfts.length > 0 && address !== undefined ? (
         <article className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-5 gap-2">
           {userNfts
             .sort((a: INftDataSea, b: INftDataSea) => parseInt(a.identifier) - parseInt(b.identifier))

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { motion } from "motion/react";
 import Confetti from "react-confetti";
 
@@ -167,7 +166,6 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
     }
   }, [isRacing, raceTime]);
 
-
   useEffect(() => {
     if (!isRacing) return;
 
@@ -314,7 +312,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               />
             )}
           </div>
-          {countdown !== 0 && (
+          {countdown !== "0" && (
             <div className="absolute inset-0 flex items-center justify-center z-50">
               <span className="text-5xl font-bold text-white">{countdown}</span>
             </div>
@@ -335,8 +333,9 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               return (
                 <div
                   key={`${racer.id}-${triggerAnimation}`}
-                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${racer.id === ship.id ? "bg-yellow-500/20" : ""
-                    }`}
+                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${
+                    racer.id === ship.id ? "bg-yellow-500/20" : ""
+                  }`}
                   style={{ "--startY": `${translateY}px` } as React.CSSProperties}
                 >
                   {getPositionCircle(racer.position)}

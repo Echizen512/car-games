@@ -7,10 +7,6 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract Finance is Ownable {
     IERC20 public ronKeToken;
 
-    uint256 public firstPlaceReward;
-    uint256 public secondPlaceReward;
-    uint256 public thirdPlaceReward;
-
     bytes32 public constant COMMON = "COMMON";
     bytes32 public constant UNCOMMON = "UNCOMMON";
     bytes32 public constant RARE = "RARE";
@@ -23,6 +19,9 @@ contract Finance is Ownable {
     mapping(uint256 => Reward[]) public nftRewards;
 
     uint256 public maxId;
+    uint256 public firstPlaceReward;
+    uint256 public secondPlaceReward;
+    uint256 public thirdPlaceReward;
 
     //events
     event RaceStarted(address indexed player, uint256 nftId);
@@ -70,7 +69,7 @@ contract Finance is Ownable {
         } else {
             nftOwner[_nftID] = player;
             uint256 currentOil = oilBalances[_nftID];
-            require(currentOil > 0, "Not enough oil");
+            require(currentOil > 0, "Not enough fuel");
             oilBalances[_nftID] -= 15;
         }
         emit RaceStarted(player, _nftID);

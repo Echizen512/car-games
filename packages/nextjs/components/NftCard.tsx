@@ -6,6 +6,7 @@ import ParticleBackground from "./ParticleBackground";
 import VirtualRace from "./VirtualRace";
 import { AnimatePresence } from "motion/react";
 import { NextPage } from "next";
+import { useAccount } from "wagmi";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { INftAttribute, INftDataSea, INftPreview } from "~~/types/nftData.entity";
@@ -16,6 +17,8 @@ type NftCardProps = {
 };
 
 const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
+  const { address } = useAccount();
+
   //states
   const [nftPreview, setNftPreview] = useState<INftPreview | null>(null);
   const [loadData, setLoadData] = useState<boolean>(false);
@@ -159,30 +162,30 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
     );
   };
 
- const NftCardAttributes = (x: INftAttribute, y: number) => {
-  const oilLimit = 75;
-  const allStaticsLimit = 85;
+  const NftCardAttributes = (x: INftAttribute, y: number) => {
+    const oilLimit = 75;
+    const allStaticsLimit = 85;
 
-  const oil = isOwner === undefined || isOwner.startsWith("0x000000") ? x.value : oilBalance?.toString();
+    const oil = isOwner === undefined || isOwner.startsWith("0x000000") ? x.value : oilBalance?.toString();
 
-  return (
-    <div key={y} className="flex flex-col">
-      <span className="font-semibold">{x.trait_type === "oil" ? "fuel" : x.trait_type.toString()}</span>
-      <div className="flex items-center justify-center gap-5">
-        <progress
-          className="progress progress-success"
-          value={x.trait_type === "oil" ? oil : x.value}
-          max={x.trait_type === "oil" ? "75" : x.trait_type === "power" || x.trait_type === "speed" ? "100" : "85"}
-        />
-        <span className="font-semibold">
-          {x.trait_type === "oil"
-            ? `${oil}/${oilLimit}`
-            : `${x.value}/${x.trait_type === "power" || x.trait_type === "speed" ? "100" : allStaticsLimit}`}
-        </span>
+    return (
+      <div key={y} className="flex flex-col">
+        <span className="font-semibold">{x.trait_type === "oil" ? "fuel" : x.trait_type.toString()}</span>
+        <div className="flex items-center justify-center gap-5">
+          <progress
+            className="progress progress-success"
+            value={x.trait_type === "oil" ? oil : x.value}
+            max={x.trait_type === "oil" ? "75" : x.trait_type === "power" || x.trait_type === "speed" ? "100" : "85"}
+          />
+          <span className="font-semibold">
+            {x.trait_type === "oil"
+              ? `${oil}/${oilLimit}`
+              : `${x.value}/${x.trait_type === "power" || x.trait_type === "speed" ? "100" : allStaticsLimit}`}
+          </span>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
   const BadgeRarityCard = () => {
     let bgRarity: string = "bg-gray-800";
@@ -242,7 +245,11 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
               {nftPreview?.attributes?.slice(1).map((x, y) => NftCardAttributes(x, y))}
 
               <div className="grid grid-cols-2 gap-3 mt-5">
-                <button onClick={handleStartRace} className="btn btn-success rounded-md font-medium">
+                <button
+                  onClick={handleStartRace}
+                  className="btn btn-success rounded-md font-medium"
+                  disabled={address === undefined}
+                >
                   Start Virtual Race
                 </button>
 

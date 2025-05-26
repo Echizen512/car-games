@@ -345,7 +345,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
                   <div className="flex-1">
                     <div className="text-white font-medium">{racer.name}</div>
                     <div className="grid grid-cols-5 gap-4 mt-1">
-                      <div className="text-gray-400 text-sm">Oil: {racer.stats.oil}</div>
+                      <div className="text-gray-400 text-sm">Fuel: {racer.stats.oil}</div>
                       <div className="text-gray-400 text-sm">Power: {racer.stats.power}</div>
                       <div className="text-gray-400 text-sm">Speed: {racer.stats.speed}</div>
                       <div className="text-gray-400 text-sm">Handling: {racer.stats.handling}</div>

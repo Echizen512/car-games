@@ -82,7 +82,7 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
       type: "NFT Ship",
       image: data.image_url,
       stats: {
-        oil: nftPreview.attributes.find(attr => attr.trait_type === "oil")?.value || 50,
+        fuel: nftPreview.attributes.find(attr => attr.trait_type === "oil")?.value || 50,
         power: nftPreview.attributes.find(attr => attr.trait_type === "power")?.value || 50,
         speed: nftPreview.attributes.find(attr => attr.trait_type === "speed")?.value || 50,
         handling: nftPreview.attributes.find(attr => attr.trait_type === "handling")?.value || 50,
@@ -159,30 +159,30 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
     );
   };
 
-  const NftCardAttributes = (x: INftAttribute, y: number) => {
-    const oilLimit = 75;
-    const allStaticsLimit = 85;
+ const NftCardAttributes = (x: INftAttribute, y: number) => {
+  const oilLimit = 75;
+  const allStaticsLimit = 85;
 
-    const oil = isOwner === undefined || isOwner.startsWith("0x000000") ? x.value : oilBalance?.toString();
+  const oil = isOwner === undefined || isOwner.startsWith("0x000000") ? x.value : oilBalance?.toString();
 
-    return (
-      <div key={y} className="flex flex-col">
-        <span className="font-semibold">{x.trait_type.toString()}</span>
-        <div className="flex items-center justify-center gap-5">
-          <progress
-            className="progress progress-success"
-            value={x.trait_type === "oil" ? oil : x.value}
-            max={x.trait_type === "oil" ? "75" : x.trait_type === "power" || x.trait_type === "speed" ? "100" : "85"}
-          />
-          <span className="font-semibold">
-            {x.trait_type === "oil"
-              ? `${oil}/${oilLimit}`
-              : `${x.value}/${x.trait_type === "power" || x.trait_type === "speed" ? "100" : allStaticsLimit}`}
-          </span>
-        </div>
+  return (
+    <div key={y} className="flex flex-col">
+      <span className="font-semibold">{x.trait_type === "oil" ? "fuel" : x.trait_type.toString()}</span>
+      <div className="flex items-center justify-center gap-5">
+        <progress
+          className="progress progress-success"
+          value={x.trait_type === "oil" ? oil : x.value}
+          max={x.trait_type === "oil" ? "75" : x.trait_type === "power" || x.trait_type === "speed" ? "100" : "85"}
+        />
+        <span className="font-semibold">
+          {x.trait_type === "oil"
+            ? `${oil}/${oilLimit}`
+            : `${x.value}/${x.trait_type === "power" || x.trait_type === "speed" ? "100" : allStaticsLimit}`}
+        </span>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
   const BadgeRarityCard = () => {
     let bgRarity: string = "bg-gray-800";

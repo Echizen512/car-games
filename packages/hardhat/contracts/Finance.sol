@@ -14,12 +14,22 @@ contract Finance is Ownable {
 
     mapping(uint256 => uint256) public oilBalances;
     mapping(uint256 => address) public nftOwner;
-    mapping(address => uint256) public rewards;
+    mapping(address => mapping(uint256 => Reward)) public rewards;
+    mapping(address => uint256) public rewardCount;
+    mapping(uint256 => Reward[]) public nftRewards;
 
     uint256 public maxId;
 
     //events
     event RaceStarted(address indexed player, uint256 nftId);
+    event RewardGiven(address indexed player, uint256 amount);
+    event Withdrawal(address indexed player, uint256 amount, uint256 penalty);
+
+    struct Reward {
+        uint256 amount;
+        uint256 timestamp;
+        bool withdrawn;
+    }
 
     //constructor
     constructor(address owner, address _ronKeToken) Ownable(owner) {
@@ -65,61 +75,60 @@ contract Finance is Ownable {
         }
     }
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    function grantReward(address player, uint8 position) external onlyOwner {
+    function grantReward(address player, uint256 _nftID, uint8 position) external onlyOwner {
         uint256 rewardAmount;
 
         if (position == 1) {
-            rewardAmount = 8 * 10 ** 18; // 8 RKS
+            rewardAmount = 8 * 10 ** 18;
         } else if (position == 2) {
-            rewardAmount = 5 * 10 ** 18; // 5 RKS
+            rewardAmount = 5 * 10 ** 18;
         } else if (position == 3) {
-            rewardAmount = 3 * 10 ** 18; // 3 RKS
+            rewardAmount = 3 * 10 ** 18;
         } else {
-            rewardAmount = 0; // No reward for fourth place or beyond
+            rewardAmount = 0;
         }
 
         require(rewardAmount > 0, "No reward for this position");
-        require(ronKeToken.balanceOf(address(this)) >= rewardAmount, "Insufficient funds in contract"); // ???
+        require(ronKeToken.balanceOf(address(this)) >= rewardAmount, "Insufficient funds in contract");
 
-        // rewards[player].push(Reward(rewardAmount, block.timestamp));
-        rewards[player] += rewardAmount;
+        uint256 index = rewardCount[player];
+        rewards[player][index] = Reward(rewardAmount, block.timestamp, false);
+        rewardCount[player]++;
+
+        nftRewards[_nftID].push(Reward(rewardAmount, block.timestamp, false));
+
         ronKeToken.transfer(player, rewardAmount);
         emit RewardGiven(player, rewardAmount);
     }
 
-    function withdrawEarnings() external {
+    function withdrawEarnings(uint256 _nftID) external {
+        require(nftOwner[_nftID] == msg.sender, "You do not own this NFT");
+
+        Reward[] storage nftRewardList = nftRewards[_nftID];
         uint256 totalAmount = 0;
         uint256 penalty = 0;
         uint256 currentTime = block.timestamp;
 
-        // Calculate earnings and penalties based on elapsed time
-        for (uint256 i = 0; i < rewards[msg.sender].length; i++) {
-            uint256 timeElapsed = currentTime - rewards[msg.sender][i].timestamp;
-            uint256 amount = rewards[msg.sender][i].amount;
+        for (uint256 i = 0; i < nftRewardList.length; i++) {
+            if (nftRewardList[i].withdrawn) continue;
 
-            if (timeElapsed < 24 hours) {
-                penalty += (amount * 50) / 100; // 50% penalty
-            } else if (timeElapsed < 48 hours) {
-                penalty += (amount * 30) / 100; // 30% penalty
-            } else if (timeElapsed < 72 hours) {
-                penalty += (amount * 20) / 100; // 20% penalty
-            }
+            uint256 timeElapsed = currentTime - nftRewardList[i].timestamp;
+            uint256 amount = nftRewardList[i].amount;
+
+            if (timeElapsed < 24 hours) penalty += (amount * 50) / 100;
+            else if (timeElapsed < 48 hours) penalty += (amount * 30) / 100;
+            else if (timeElapsed < 72 hours) penalty += (amount * 20) / 100;
 
             totalAmount += amount;
+            nftRewardList[i].withdrawn = true;
         }
 
         require(totalAmount > 0, "No earnings available for withdrawal");
         uint256 finalAmount = totalAmount - penalty;
 
-        rewards[msg.sender] = new Reward[](0); // Clear user's earnings history
-        ronKeToken.transfer(owner(), penalty); // Transfer penalty amount to contract owner
+        ronKeToken.transfer(owner(), penalty);
         ronKeToken.transfer(msg.sender, finalAmount);
 
         emit Withdrawal(msg.sender, finalAmount, penalty);
     }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 }

@@ -66,8 +66,8 @@ const Configuration: NextPage = () => {
       {address !== owner ? (
         <DialogOnlyAdmin />
       ) : (
-        <div className="card p-6 shadow-lg rounded-lg bg-white">
-          <h1 className="text-2xl font-bold mb-4">Configuration</h1>
+        <div className="card p-6 shadow-lg rounded-lg bg-primary mt-6">
+          <h1 className="text-2xl font-bold mb-4 text-center">Configuration</h1>
 
           <div className="mb-4">
             <p><strong>Actual First Place Reward:</strong> {firstReward?.toString()}</p>
@@ -102,7 +102,7 @@ const Configuration: NextPage = () => {
 
             <button
               type="submit"
-              className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition"
+              className="mt-4 bg-secondary text-white p-2 rounded"
               disabled={loading}
             >
               {loading ? "Updating..." : "Update Rewards"}

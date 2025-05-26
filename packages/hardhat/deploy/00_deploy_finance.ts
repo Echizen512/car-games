@@ -1,5 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
+import { Contract } from "ethers";
 // import { Contract } from "ethers";
 
 /**
@@ -22,10 +23,22 @@ const deployFinance: DeployFunction = async function (hre: HardhatRuntimeEnviron
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
+  await deploy("RonKe", {
+    from: deployer,
+    // Contract constructor arguments
+    args: ["0x6aD90bB24ed985F3876aDE9AE09381b1Cd180548"],
+    log: true,
+    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
+    // automatically mining the contract deployment transaction. There is no effect on live networks.
+    autoMine: true,
+  });
+
+  const ronKeContract = await hre.ethers.getContract<Contract>("RonKe", deployer);
+
   await deploy("Finance", {
     from: deployer,
     // Contract constructor arguments
-    args: ["0xa76e496B1b345ED5063e004fa7094283E67b3855", "0xa76e496B1b345ED5063e004fa7094283E67b3855"],
+    args: ["0x6aD90bB24ed985F3876aDE9AE09381b1Cd180548", await ronKeContract.getAddress()],
     // args: ["0x545eC13A0D736474BCF62693322168f161a00447"],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
@@ -34,7 +47,8 @@ const deployFinance: DeployFunction = async function (hre: HardhatRuntimeEnviron
   });
 
   // Get the deployed contract to interact with it after deploying.
-  // const yourContract = await hre.ethers.getContract<Contract>("YourContract", deployer);
+
+  console.log("viva ronke", await ronKeContract.getAddress());
   // console.log("👋 Initial greeting:", await yourContract.greeting());
 };
 

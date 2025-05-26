@@ -75,14 +75,14 @@ contract Finance is Ownable {
         }
     }
 
-    function grantReward(address player, uint256 _nftID, uint8 position) external onlyOwner {
+    function grantReward(address player, uint256 _nftID, uint8 _position) external onlyOwner {
         uint256 rewardAmount;
 
-        if (position == 1) {
+        if (_position == 1) {
             rewardAmount = 8 * 10 ** 18;
-        } else if (position == 2) {
+        } else if (_position == 2) {
             rewardAmount = 5 * 10 ** 18;
-        } else if (position == 3) {
+        } else if (_position == 3) {
             rewardAmount = 3 * 10 ** 18;
         } else {
             rewardAmount = 0;

@@ -167,6 +167,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
     }
   }, [isRacing, raceTime]);
 
+
   useEffect(() => {
     if (!isRacing) return;
 
@@ -281,7 +282,15 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
             <video
               ref={videoRef}
               src="/fondo.mp4"
-              className="w-full h-full object-fill"
+              className="w-full h-full object-fill absolute top-0 left-0 z-[1]"
+              preload="auto"
+              muted
+              playsInline
+            />
+
+            <video
+              src="/frente.mov"
+              className="absolute top-0 left-0 w-full h-full object-contain z-[3]"
               preload="auto"
               muted
               playsInline
@@ -299,7 +308,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
                 }}
                 src={ship.image ?? ""}
                 alt={ship.name}
-                className="absolute bottom-[40px] left-[100px]"
+                className="absolute bottom-[40px] left-[100px] z-[2]"
                 width={150}
                 height={150}
               />
@@ -326,9 +335,8 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               return (
                 <div
                   key={`${racer.id}-${triggerAnimation}`}
-                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${
-                    racer.id === ship.id ? "bg-yellow-500/20" : ""
-                  }`}
+                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${racer.id === ship.id ? "bg-yellow-500/20" : ""
+                    }`}
                   style={{ "--startY": `${translateY}px` } as React.CSSProperties}
                 >
                   {getPositionCircle(racer.position)}

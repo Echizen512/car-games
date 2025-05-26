@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { NextPage } from "next";
-import { formatEther, parseEther, parseGwei } from "viem";
+import { formatEther } from "viem";
 import { useAccount } from "wagmi";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import NftCard from "~~/components/NftCard";

@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { NextPage } from "next";
-import { parseEther } from "viem";
+import { formatEther, parseEther, parseGwei } from "viem";
 import { useAccount } from "wagmi";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import NftCard from "~~/components/NftCard";
@@ -72,7 +72,7 @@ const Home: NextPage = () => {
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-xl rounded-lg p-4 w-auto">
           <h2 className=" font-semibold flex items-center">
             Total Token Balance:
-            <span className=" font-bold text-yellow-300"> {parseEther(userBalance?.toString() ?? "0")} RKS</span>
+            <span className=" font-bold text-yellow-300"> {formatEther(userBalance ?? 0n)} RKS</span>
           </h2>
         </div>
       </div>

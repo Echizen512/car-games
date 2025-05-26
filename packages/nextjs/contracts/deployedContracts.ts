@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   11155111: {
     Finance: {
-      address: "0x397fF89F119f331a5E84B8B8533Fc07F1e45C7A6",
+      address: "0xb6859f913399ee6ED32A0e115583e4f74a8FfE7F",
       abi: [
         {
           inputs: [
@@ -176,6 +176,19 @@ const deployedContracts = {
               internalType: "bytes32",
               name: "",
               type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "firstPlaceReward",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
             },
           ],
           stateMutability: "view",
@@ -401,6 +414,32 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "secondPlaceReward",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "thirdPlaceReward",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "address",
@@ -409,6 +448,29 @@ const deployedContracts = {
             },
           ],
           name: "transferOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_first",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_second",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_third",
+              type: "uint256",
+            },
+          ],
+          name: "updateRewards",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",

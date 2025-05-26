@@ -7,6 +7,10 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract Finance is Ownable {
     IERC20 public ronKeToken;
 
+    uint256 public firstPlaceReward;
+    uint256 public secondPlaceReward;
+    uint256 public thirdPlaceReward;
+
     bytes32 public constant COMMON = "COMMON";
     bytes32 public constant UNCOMMON = "UNCOMMON";
     bytes32 public constant RARE = "RARE";
@@ -34,6 +38,9 @@ contract Finance is Ownable {
     //constructor
     constructor(address owner, address _ronKeToken) Ownable(owner) {
         ronKeToken = IERC20(_ronKeToken);
+        firstPlaceReward = 8 * 10 ** 18;
+        secondPlaceReward = 5 * 10 ** 18;
+        thirdPlaceReward = 3 * 10 ** 18;
     }
 
     function setDefaultOil(uint256 _nftID, bytes32 _rarity) private {
@@ -75,15 +82,21 @@ contract Finance is Ownable {
         }
     }
 
+    function updateRewards(uint256 _first, uint256 _second, uint256 _third) external onlyOwner {
+        firstPlaceReward = _first;
+        secondPlaceReward = _second;
+        thirdPlaceReward = _third;
+    }
+
     function grantReward(address player, uint256 _nftID, uint8 _position) external onlyOwner {
         uint256 rewardAmount;
 
         if (_position == 1) {
-            rewardAmount = 8 * 10 ** 18;
+            rewardAmount = firstPlaceReward;
         } else if (_position == 2) {
-            rewardAmount = 5 * 10 ** 18;
+            rewardAmount = secondPlaceReward;
         } else if (_position == 3) {
-            rewardAmount = 3 * 10 ** 18;
+            rewardAmount = thirdPlaceReward;
         } else {
             rewardAmount = 0;
         }

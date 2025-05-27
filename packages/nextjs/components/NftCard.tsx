@@ -61,6 +61,7 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
   });
 
   const { writeContractAsync: writeFinancetAsync } = useScaffoldWriteContract({ contractName: "Finance" });
+  // const { writeContractAsync: writeRonkeAsync } = useScaffoldWriteContract({ contractName: "" });
 
   //functions
   const getPreviewNft = useCallback(async () => {
@@ -114,6 +115,12 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
 
   const handleStartRace = async () => {
     try {
+
+      await writeFinancetAsync({
+        functionName: "raceStart",
+        args: [BigInt(parseInt(data.identifier)), getRarity()],
+      });
+
       await writeFinancetAsync({
         functionName: "raceStart",
         args: [BigInt(parseInt(data.identifier)), getRarity()],
@@ -246,11 +253,11 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
 
               <div className="grid grid-cols-2 gap-3 mt-5">
                 <button
-                  // onClick={handleStartRace}
-                  onClick={() => {
-                    setSelectedShip(prepareShipData());
-                    setShowRace(true);
-                  }}
+                  onClick={handleStartRace}
+                  // onClick={() => {
+                  //   setSelectedShip(prepareShipData());
+                  //   setShowRace(true);
+                  // }}
                   className="btn btn-success rounded-md font-medium"
                   disabled={address === undefined}
                 >

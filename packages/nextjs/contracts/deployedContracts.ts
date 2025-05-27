@@ -5,9 +5,9 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  11155111: {
+  31337: {
     Finance: {
-      address: "0x89D4A5Bf2bD3c9B8a8B0a8F99de7Aa216347bBbf",
+      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
       abi: [
         {
           inputs: [
@@ -254,6 +254,19 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "minAmountRace",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "uint256",
@@ -353,7 +366,7 @@ const deployedContracts = {
           ],
           name: "raceStart",
           outputs: [],
-          stateMutability: "nonpayable",
+          stateMutability: "payable",
           type: "function",
         },
         {
@@ -498,7 +511,7 @@ const deployedContracts = {
       },
     },
     RonKe: {
-      address: "0x8702D8F38091a14f70926784F190cF04E1914853",
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
       abi: [
         {
           inputs: [

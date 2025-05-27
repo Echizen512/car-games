@@ -36,6 +36,7 @@ contract Finance is Ownable, ReentrancyGuard {
     uint256 public firstPlaceReward;
     uint256 public secondPlaceReward;
     uint256 public thirdPlaceReward;
+    uint256 public minAmountRace;
 
     //events
     event RaceStarted(address indexed player, uint256 nftId);
@@ -53,6 +54,7 @@ contract Finance is Ownable, ReentrancyGuard {
         firstPlaceReward = 8 * 10 ** 18;
         secondPlaceReward = 5 * 10 ** 18;
         thirdPlaceReward = 3 * 10 ** 18;
+        minAmountRace = 2 * 10 ** 18;
     }
 
     function setDefaultFuel(uint256 _nftID, bytes32 _rarity) private {
@@ -72,9 +74,12 @@ contract Finance is Ownable, ReentrancyGuard {
         }
     }
 
-    function raceStart(uint256 _nftID, bytes32 _rarity) public {
+    function raceStart(uint256 _nftID, bytes32 _rarity) public payable {
         address player = msg.sender;
         require(ronkenNftContract.ownerOf(_nftID) == msg.sender, "You do not own this NFT");
+        require(ronKeTokenContract.balanceOf(player) >= minAmountRace, "Insufficient funds");
+        bool success = ronKeTokenContract.transferFrom(msg.sender, address(this), minAmountRace);
+        require(success, "Token transfer failed");
 
         if (nftOwner[_nftID] == address(0)) {
             setDefaultFuel(_nftID, _rarity);

@@ -261,25 +261,12 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
                 <div>
                   <button
                     className="btn btn-withdraw w-full py-2 rounded-md font-medium opacity-50 cursor-not-allowed"
-                    disabled
-                    onClick={() => setIsOpen(true)}
+
                   >
                     Claim Reward
                   </button>
 
-                  {isOpen && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                      <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-semibold mb-4">Coming Soon! 🚀</h2>
-                        <p className="text-lg">
-                          The reward claiming feature will be available in the coming days. Stay tuned!
-                        </p>
-                        <button className="mt-4 btn btn-primary py-2 px-4 rounded-md" onClick={() => setIsOpen(false)}>
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                  
                 </div>
               </div>
             </div>

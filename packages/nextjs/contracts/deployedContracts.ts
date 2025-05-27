@@ -5,9 +5,9 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  11155111: {
+  31337: {
     Finance: {
-      address: "0x89D4A5Bf2bD3c9B8a8B0a8F99de7Aa216347bBbf",
+      address: "0x68B1D87F95878fE05B998F19b66F4baba5De1aed",
       abi: [
         {
           inputs: [
@@ -243,6 +243,19 @@ const deployedContracts = {
         {
           inputs: [],
           name: "maxId",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "minAmountRace",
           outputs: [
             {
               internalType: "uint256",
@@ -498,7 +511,7 @@ const deployedContracts = {
       },
     },
     RonKe: {
-      address: "0x8702D8F38091a14f70926784F190cF04E1914853",
+      address: "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE",
       abi: [
         {
           inputs: [

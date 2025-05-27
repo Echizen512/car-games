@@ -4,30 +4,36 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import ParticleBackground from "./ParticleBackground";
 import VirtualRace from "./VirtualRace";
+import { createConfig, http, signTypedData } from "@wagmi/core";
+import { localhost, mainnet, sepolia } from "@wagmi/core/chains";
 import { AnimatePresence } from "motion/react";
 import { NextPage } from "next";
-import { useAccount } from "wagmi";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useScaffoldContract, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { INftAttribute, INftDataSea, INftPreview } from "~~/types/nftData.entity";
 
 type NftCardProps = {
   data: INftDataSea;
   selectedRarity: string;
+  address: string;
+  userBalance: bigint;
 };
 
-const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
-  const { address } = useAccount();
-
+const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity, address, userBalance }) => {
   //states
   const [nftPreview, setNftPreview] = useState<INftPreview | null>(null);
   const [loadData, setLoadData] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [showRace, setShowRace] = useState<boolean>(false);
   const [selectedShip, setSelectedShip] = useState<any | null>(null);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  // const [isOpen, setIsOpen] = useState<boolean>(false);
 
   //smart contract
+  const { data: financeContract } = useScaffoldContract({ contractName: "Finance" });
+  const { data: ronKeContract } = useScaffoldContract({ contractName: "RonKe" });
+
+  const { writeContractAsync: writeFinancetAsync } = useScaffoldWriteContract({ contractName: "Finance" });
+
   const { data: isOwner } = useScaffoldReadContract({
     contractName: "Finance",
     functionName: "nftOwner",
@@ -60,7 +66,10 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
     functionName: "EPIC",
   });
 
-  const { writeContractAsync: writeFinancetAsync } = useScaffoldWriteContract({ contractName: "Finance" });
+  const { data: minAmountRace } = useScaffoldReadContract({
+    contractName: "Finance",
+    functionName: "minAmountRace",
+  });
 
   //functions
   const getPreviewNft = useCallback(async () => {
@@ -112,12 +121,56 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
     return data;
   };
 
+  const config = createConfig({
+    chains: [mainnet, sepolia, localhost],
+    transports: {
+      [mainnet.id]: http(),
+      [sepolia.id]: http(),
+      [localhost.id]: http(),
+    },
+  });
+
   const handleStartRace = async () => {
+    if (minAmountRace === undefined) return;
+    if (financeContract?.address === undefined) return;
+    if (ronKeContract?.address === undefined) return;
+
     try {
-      await writeFinancetAsync({
-        functionName: "raceStart",
-        args: [BigInt(parseInt(data.identifier)), getRarity()],
-      });
+      // const signature = await signTypedData(config, {
+      //   domain: {
+      //     name: "RonKeToken",
+      //     version: "1",
+      //     chainId: BigInt(localhost.id),
+      //     verifyingContract: ronKeContract.address,
+      //   },
+      //   types: {
+      //     EIP712Domain: [
+      //       { name: "name", type: "string" },
+      //       { name: "version", type: "string" },
+      //       { name: "chainId", type: "uint256" },
+      //       { name: "verifyingContract", type: "address" },
+      //     ],
+      //     Permit: [
+      //       { name: "owner", type: "address" },
+      //       { name: "spender", type: "address" },
+      //       { name: "value", type: "uint256" },
+      //       { name: "deadline", type: "uint256" },
+      //     ],
+      //   },
+      //   primaryType: "Permit",
+      //   message: {
+      //     owner: address,
+      //     spender: financeContract.address,
+      //     value: minAmountRace,
+      //     deadline: BigInt(Math.floor(Date.now() / 1000) + 3600),
+      //   },
+      // });
+
+      console.log(signature);
+      // await writeFinancetAsync({
+      //   functionName: "raceStart",
+      //   args: [BigInt(parseInt(data.identifier)), getRarity()],
+      // });
 
       setSelectedShip(prepareShipData());
       setShowRace(true);
@@ -246,27 +299,22 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity }) => {
 
               <div className="grid grid-cols-2 gap-3 mt-5">
                 <button
-                  // onClick={handleStartRace}
-                  onClick={() => {
-                    setSelectedShip(prepareShipData());
-                    setShowRace(true);
-                  }}
+                  onClick={handleStartRace}
+                  // onClick={() => {
+                  //   setSelectedShip(prepareShipData());
+                  //   setShowRace(true);
+                  // }}
                   className="btn btn-success rounded-md font-medium"
-                  disabled={address === undefined}
+                  disabled={address === undefined || !minAmountRace || minAmountRace > userBalance}
                 >
                   Start Virtual Race
                 </button>
 
                 {/* Claim Reward Modal */}
                 <div>
-                  <button
-                    className="btn btn-withdraw w-full py-2 rounded-md font-medium opacity-50 cursor-not-allowed"
-
-                  >
+                  <button className="btn btn-withdraw w-full py-2 rounded-md font-medium opacity-50 cursor-not-allowed">
                     Claim Reward
                   </button>
-
-                  
                 </div>
               </div>
             </div>

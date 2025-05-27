@@ -8,6 +8,7 @@ interface Ship {
   name: string;
   type: string;
   image?: string;
+  rarity: "Common" | "Uncommon" | "Rare" | "Epic";
   stats: {
     oil: number;
     power: number;
@@ -16,6 +17,7 @@ interface Ship {
     stormStability: number;
   };
 }
+
 
 interface RacerPosition {
   id: string;
@@ -48,15 +50,15 @@ const selectedConfig = configurations[Math.floor(Math.random() * configurations.
 const getStatsByCategory = (category: string) => {
   switch (category) {
     case "Common":
-      return { oil: 60, power: 65, speed: 70, handling: 60, stormStability: 65 };
+      return { oil: 20, power: 30, speed: 30, handling: 40, stormStability: 20 };
     case "Uncommon":
-      return { oil: 70, power: 75, speed: 80, handling: 70, stormStability: 75 };
+      return { oil: 25, power: 25, speed: 50, handling: 50, stormStability: 25 };
     case "Rare":
       return { oil: 80, power: 85, speed: 90, handling: 80, stormStability: 85 };
     case "Epic":
       return { oil: 90, power: 95, speed: 100, handling: 90, stormStability: 95 };
     default:
-      return { oil: 50, power: 55, speed: 60, handling: 50, stormStability: 55 };
+      return { oil: 40, power: 40, speed: 30, handling: 50, stormStability: 55 };
   }
 };
 

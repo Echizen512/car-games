@@ -29,7 +29,7 @@ export const GET = async (request: NextRequest) => {
   try {
     await writeContract(config, {
       abi: financeAbi,
-      address: "0x1f396B60e1EC1F3356f9080E78be3dF003B8Ab93",
+      address: "0x4898E00b60D6d34D0823D2CCd8D759FD3F03f4B5",
       account: account,
       functionName: "grantReward",
       args: ["0xD2692F9df925D18D527ABe8b3d99EE9E9C8d75AE", 1n, 1n],

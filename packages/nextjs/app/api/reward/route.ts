@@ -34,7 +34,7 @@ export const GET = async (request: NextRequest) => {
     //   functionName: "resetAllNftOwners",
     // });
     console.log("dios porque?");
-    return NextResponse.json({ ok: true }, { status: 200 });
+    return NextResponse.json({ ok: true, host, place, referer }, { status: 200 });
   } catch (err) {
     console.log(err);
     return NextResponse.error();

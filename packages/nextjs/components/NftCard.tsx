@@ -256,11 +256,11 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity, address, userBa
 
               <div className="grid grid-cols-2 gap-3 mt-5">
                 <button
-                  onClick={handleStartRace}
-                  // onClick={() => {
-                  //   setSelectedShip(prepareShipData());
-                  //   setShowRace(true);
-                  // }}
+                  // onClick={handleStartRace}
+                  onClick={() => {
+                    setSelectedShip(prepareShipData());
+                    setShowRace(true);
+                  }}
                   className="btn btn-success rounded-md font-medium"
                   disabled={address === undefined || !minAmountRace || minAmountRace > userBalance}
                 >

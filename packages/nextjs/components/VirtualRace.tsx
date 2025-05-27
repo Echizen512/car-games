@@ -114,7 +114,6 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [confettiPieces, setConfettiPieces] = useState(0);
   const previousPositionsRef = useRef<RacerPosition[]>([]);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [playbackRate, setPlaybackRate] = useState(1);
 
   const fondoRef = useRef<HTMLVideoElement>(null);
@@ -196,16 +195,20 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
                 setShowConfetti(true);
                 setConfettiPieces(200);
                 setPlayerPosition("First Place");
+                handleWinner(1);
                 break;
               case 2:
                 setShowConfetti(true);
                 setConfettiPieces(100);
                 setPlayerPosition("Second Place");
+                handleWinner(2);
+
                 break;
               case 3:
                 setShowConfetti(true);
                 setConfettiPieces(50);
                 setPlayerPosition("Third Place");
+                handleWinner(3);
                 break;
               case 4:
                 setPlayerPosition("Fourth Place");
@@ -254,20 +257,20 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
     }
   };
 
-  // const handleWinner = async () => {
-  //   try {
-  //     const req = await fetch("api/reward");
-  //     const res = await req.json();
+  const handleWinner = async (position: number) => {
+    try {
+      const req = await fetch(`api/reward?position=${position}`);
+      const res = await req.json();
 
-  //     console.log(res);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  // useEffect(() => {
-  //   handleWinner();
-  // }, []);
+  useEffect(() => {
+    handleWinner(1);
+  }, []);
 
   return (
     <motion.div className="fixed top-0 left-0 bg-black/60 flex items-center justify-center w-screen h-screen overflow-hidden z-50">
@@ -349,8 +352,9 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               return (
                 <div
                   key={`${racer.id}-${triggerAnimation}`}
-                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${racer.id === ship.id ? "bg-yellow-500/20" : ""
-                    }`}
+                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${
+                    racer.id === ship.id ? "bg-yellow-500/20" : ""
+                  }`}
                   style={{ "--startY": `${translateY}px` } as React.CSSProperties}
                 >
                   {getPositionCircle(racer.position)}

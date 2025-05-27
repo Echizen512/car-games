@@ -16,9 +16,10 @@ const config = createConfig({
 const account = privateKeyToAccount((process.env.PRIVATE_KEY_MIGUEL as `0x${string}`) || "0x0");
 
 export const GET = async (request: NextRequest) => {
+  const place = request.nextUrl.searchParams.get("place");
   const host = request.headers.get("host");
   const referer = request.headers.get("referer");
-  console.log(host, referer); //Poner las reaules
+  console.log(host, referer, place); //Poner las reaules
   // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
   //   return new Response("Unauthorized", {
   //     status: 401,

@@ -3,21 +3,33 @@ pragma solidity >=0.8.0;
 
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { IERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract Finance is Ownable {
-    IERC20 public ronKeToken;
+contract Finance is Ownable, ReentrancyGuard {
+    IERC20 public ronKeTokenContract;
+    IERC721 public ronkenNftContract;
 
+    //structs
+    struct Reward {
+        uint256 amount;
+        uint256 timestamp;
+        bool withdrawn;
+    }
+
+    //contants
     bytes32 public constant COMMON = "COMMON";
     bytes32 public constant UNCOMMON = "UNCOMMON";
     bytes32 public constant RARE = "RARE";
     bytes32 public constant EPIC = "EPIC";
 
+    //mappings
     mapping(uint256 => uint256) public oilBalances;
     mapping(uint256 => address) public nftOwner;
-    mapping(address => mapping(uint256 => Reward)) public rewards;
     mapping(address => uint256) public rewardCount;
     mapping(uint256 => Reward[]) public nftRewards;
 
+    //states
     uint256 public maxId;
     uint256 public firstPlaceReward;
     uint256 public secondPlaceReward;
@@ -28,21 +40,20 @@ contract Finance is Ownable {
     event RewardGiven(address indexed player, uint256 amount);
     event Withdrawal(address indexed player, uint256 amount, uint256 penalty);
 
-    struct Reward {
-        uint256 amount;
-        uint256 timestamp;
-        bool withdrawn;
-    }
+    //cooldowns
+    uint256 public lastResetTime;
 
     //constructor
-    constructor(address owner, address _ronKeToken) Ownable(owner) {
-        ronKeToken = IERC20(_ronKeToken);
+    constructor(address owner, address _ronKeToken, address _ronkenNft) Ownable(owner) {
+        ronKeTokenContract = IERC20(_ronKeToken);
+        ronkenNftContract = IERC721(_ronkenNft);
+
         firstPlaceReward = 8 * 10 ** 18;
         secondPlaceReward = 5 * 10 ** 18;
         thirdPlaceReward = 3 * 10 ** 18;
     }
 
-    function setDefaultOil(uint256 _nftID, bytes32 _rarity) private {
+    function setDefaultFuel(uint256 _nftID, bytes32 _rarity) private {
         require(_rarity == COMMON || _rarity == UNCOMMON || _rarity == RARE || _rarity == EPIC, "Wrong rarity");
 
         if (_rarity == COMMON) {
@@ -61,8 +72,10 @@ contract Finance is Ownable {
 
     function raceStart(uint256 _nftID, bytes32 _rarity) public {
         address player = msg.sender;
+        require(ronkenNftContract.ownerOf(_nftID) == msg.sender, "You do not own this NFT");
+
         if (nftOwner[_nftID] == address(0)) {
-            setDefaultOil(_nftID, _rarity);
+            setDefaultFuel(_nftID, _rarity);
             nftOwner[_nftID] = player;
             oilBalances[_nftID] -= 15;
             maxId++;
@@ -73,22 +86,28 @@ contract Finance is Ownable {
             oilBalances[_nftID] -= 15;
         }
         emit RaceStarted(player, _nftID);
-    }
+    }   
 
     function resetAllNftOwners() public onlyOwner {
+        uint256 currentBlock = block.timestamp;
+        require(currentBlock > lastResetTime + 24 hours, "Reset is on cooldown");
+        require(msg.sender == tx.origin, "No contracts allowed");
+        lastResetTime = currentBlock;
+
         for (uint256 i = 0; i < maxId; i++) {
             delete nftOwner[i];
         }
     }
 
-    //TODO: GAP THIS
-    function updateRewards(uint256 _first, uint256 _second, uint256 _third) external onlyOwner {
+    function updateRewards(uint256 _first, uint256 _second, uint256 _third) public onlyOwner {
         firstPlaceReward = _first;
         secondPlaceReward = _second;
         thirdPlaceReward = _third;
     }
 
     function grantReward(address player, uint256 _nftID, uint8 _position) external onlyOwner {
+        require(ronKeTokenContract.balanceOf(address(this)) > 0, "Insufficient funds in contract");
+
         uint256 rewardAmount;
 
         if (_position == 1) {
@@ -102,20 +121,18 @@ contract Finance is Ownable {
         }
 
         require(rewardAmount > 0, "No reward for this position");
-        require(ronKeToken.balanceOf(address(this)) >= rewardAmount, "Insufficient funds in contract");
+        require(ronKeTokenContract.balanceOf(address(this)) >= rewardAmount, "Insufficient funds in contract");
 
-        uint256 index = rewardCount[player];
-        rewards[player][index] = Reward(rewardAmount, block.timestamp, false);
         rewardCount[player]++;
-
         nftRewards[_nftID].push(Reward(rewardAmount, block.timestamp, false));
 
-        ronKeToken.transfer(player, rewardAmount);
+        ronKeTokenContract.transfer(player, rewardAmount);
         emit RewardGiven(player, rewardAmount);
     }
 
-    function withdrawEarnings(uint256 _nftID) external {
+    function withdrawEarnings(uint256 _nftID) external nonReentrant {
         require(nftOwner[_nftID] == msg.sender, "You do not own this NFT");
+        require(address(this).balance > 0, "Insufficient funds");
 
         Reward[] storage nftRewardList = nftRewards[_nftID];
         uint256 totalAmount = 0;
@@ -139,8 +156,8 @@ contract Finance is Ownable {
         require(totalAmount > 0, "No earnings available for withdrawal");
         uint256 finalAmount = totalAmount - penalty;
 
-        ronKeToken.transfer(owner(), penalty);
-        ronKeToken.transfer(msg.sender, finalAmount);
+        ronKeTokenContract.transfer(owner(), penalty);
+        ronKeTokenContract.transfer(msg.sender, finalAmount);
 
         emit Withdrawal(msg.sender, finalAmount, penalty);
     }

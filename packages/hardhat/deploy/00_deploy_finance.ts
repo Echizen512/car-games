@@ -38,7 +38,11 @@ const deployFinance: DeployFunction = async function (hre: HardhatRuntimeEnviron
   await deploy("Finance", {
     from: deployer,
     // Contract constructor arguments
-    args: ["0x6aD90bB24ed985F3876aDE9AE09381b1Cd180548", await ronKeContract.getAddress()],
+    args: [
+      "0x6aD90bB24ed985F3876aDE9AE09381b1Cd180548",
+      await ronKeContract.getAddress(),
+      "0x4898E00b60D6d34D0823D2CCd8D759FD3F03f4B5",
+    ],
     // args: ["0x545eC13A0D736474BCF62693322168f161a00447"],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { motion } from "motion/react";
 import Confetti from "react-confetti";
 
@@ -271,24 +272,24 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
             {raceTime <= 0 && (
               <button
                 onClick={() => setIsShipVisible(!isShipVisible)}
-                className="btn btn-accent absolute top-4 left-4  z-30"
+                className="btn btn-accent absolute top-4 left-4 z-[200]"
               >
                 {isShipVisible ? "Hide Ship" : "Show Ship"}
               </button>
             )}
 
             <video
-              ref={videoRef}
-              src="/fondo.mp4"
-              className="w-full h-full object-fill absolute top-0 left-0 z-[1]"
+              src="/frente.mov"
+              className="absolute top-0 left-0 w-full h-full z-100"
               preload="auto"
               muted
               playsInline
             />
 
             <video
-              src="/frente.mov"
-              className="absolute top-0 left-0 w-full h-full object-contain z-[3]"
+              ref={videoRef}
+              src="/fondo.mp4"
+              className="w-full h-full object-fill absolute top-0 left-0 z-[1]"
               preload="auto"
               muted
               playsInline
@@ -306,7 +307,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
                 }}
                 src={ship.image ?? ""}
                 alt={ship.name}
-                className="absolute bottom-[40px] left-[100px] z-[2]"
+                className="absolute bottom-[40px] left-[100px] z-1"
                 width={150}
                 height={150}
               />
@@ -340,11 +341,12 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
                 >
                   {getPositionCircle(racer.position)}
                   {racer.image ? (
-                    <img
+                    <Image
                       src={racer.image}
                       alt={racer.name}
-                      className="w-8 h-8 rounded-full object-cover"
-                      onError={e => (e.currentTarget.src = "https://via.placeholder.com/32?text=Ship+Error")}
+                      className="rounded-full object-cover"
+                      width={30}
+                      height={30}
                     />
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-gray-700"></div>
@@ -366,9 +368,11 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
         </div>
 
         <div className="bg-neutral-800 p-4 rounded-b-lg flex items-center justify-between">
-          <div className="text-white text-xl font-medium">Time: {raceTime}s</div>
+          <div className="text-white text-xl font-medium">
+            {raceTime > 0 ? `Time: ${raceTime}$` : "Finished Career."}
+          </div>
           {raceTime <= 0 && (
-            <button onClick={onClose} className="btn btn-error">
+            <button onClick={onClose} className="btn btn-error text-white">
               Exit Race
             </button>
           )}

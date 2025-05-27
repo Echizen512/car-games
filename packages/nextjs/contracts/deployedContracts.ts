@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   11155111: {
     Finance: {
-      address: "0xb6859f913399ee6ED32A0e115583e4f74a8FfE7F",
+      address: "0xCe03767343dd6B54dF3c1D21edFd78479faF1f35",
       abi: [
         {
           inputs: [
@@ -19,6 +19,11 @@ const deployedContracts = {
             {
               internalType: "address",
               name: "_ronKeToken",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "_ronkenNft",
               type: "address",
             },
           ],
@@ -45,6 +50,11 @@ const deployedContracts = {
             },
           ],
           name: "OwnableUnauthorizedAccount",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "ReentrancyGuardReentrantCall",
           type: "error",
         },
         {
@@ -219,6 +229,19 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "lastResetTime",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "maxId",
           outputs: [
             {
@@ -367,34 +390,13 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          name: "rewards",
+          inputs: [],
+          name: "ronKeTokenContract",
           outputs: [
             {
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "timestamp",
-              type: "uint256",
-            },
-            {
-              internalType: "bool",
-              name: "withdrawn",
-              type: "bool",
+              internalType: "contract IERC20",
+              name: "",
+              type: "address",
             },
           ],
           stateMutability: "view",
@@ -402,10 +404,10 @@ const deployedContracts = {
         },
         {
           inputs: [],
-          name: "ronKeToken",
+          name: "ronkenNftContract",
           outputs: [
             {
-              internalType: "contract IERC20",
+              internalType: "contract IERC721",
               name: "",
               type: "address",
             },

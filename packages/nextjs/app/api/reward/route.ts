@@ -18,9 +18,9 @@ const account = privateKeyToAccount((process.env.PRIVATE_KEY_MIGUEL as `0x${stri
 export const GET = async (request: NextRequest) => {
   const place = request.nextUrl.searchParams.get("place");
   const host = request.headers.get("host");
-  console.log("host", host, "place", place);
+  console.log("place", place);
 
-  if (host !== "https://ship-games-nextjs.vercel.app/") {
+  if (host !== "ship-games-nextjs.vercel.app") {
     return new Response("Unauthorized", {
       status: 401,
     });

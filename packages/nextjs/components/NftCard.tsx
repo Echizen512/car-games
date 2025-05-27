@@ -4,8 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import ParticleBackground from "./ParticleBackground";
 import VirtualRace from "./VirtualRace";
-import { createConfig, http, signTypedData } from "@wagmi/core";
-import { localhost, mainnet, sepolia } from "@wagmi/core/chains";
 import { AnimatePresence } from "motion/react";
 import { NextPage } from "next";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
@@ -26,7 +24,6 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity, address, userBa
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [showRace, setShowRace] = useState<boolean>(false);
   const [selectedShip, setSelectedShip] = useState<any | null>(null);
-  // const [isOpen, setIsOpen] = useState<boolean>(false);
 
   //smart contract
   const { data: financeContract } = useScaffoldContract({ contractName: "Finance" });
@@ -121,56 +118,16 @@ const NftCard: NextPage<NftCardProps> = ({ data, selectedRarity, address, userBa
     return data;
   };
 
-  const config = createConfig({
-    chains: [mainnet, sepolia, localhost],
-    transports: {
-      [mainnet.id]: http(),
-      [sepolia.id]: http(),
-      [localhost.id]: http(),
-    },
-  });
-
   const handleStartRace = async () => {
     if (minAmountRace === undefined) return;
     if (financeContract?.address === undefined) return;
     if (ronKeContract?.address === undefined) return;
 
     try {
-      // const signature = await signTypedData(config, {
-      //   domain: {
-      //     name: "RonKeToken",
-      //     version: "1",
-      //     chainId: BigInt(localhost.id),
-      //     verifyingContract: ronKeContract.address,
-      //   },
-      //   types: {
-      //     EIP712Domain: [
-      //       { name: "name", type: "string" },
-      //       { name: "version", type: "string" },
-      //       { name: "chainId", type: "uint256" },
-      //       { name: "verifyingContract", type: "address" },
-      //     ],
-      //     Permit: [
-      //       { name: "owner", type: "address" },
-      //       { name: "spender", type: "address" },
-      //       { name: "value", type: "uint256" },
-      //       { name: "deadline", type: "uint256" },
-      //     ],
-      //   },
-      //   primaryType: "Permit",
-      //   message: {
-      //     owner: address,
-      //     spender: financeContract.address,
-      //     value: minAmountRace,
-      //     deadline: BigInt(Math.floor(Date.now() / 1000) + 3600),
-      //   },
-      // });
-
-      console.log(signature);
-      // await writeFinancetAsync({
-      //   functionName: "raceStart",
-      //   args: [BigInt(parseInt(data.identifier)), getRarity()],
-      // });
+      await writeFinancetAsync({
+        functionName: "raceStart",
+        args: [BigInt(parseInt(data.identifier)), getRarity()],
+      });
 
       setSelectedShip(prepareShipData());
       setShowRace(true);

@@ -117,25 +117,36 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playbackRate, setPlaybackRate] = useState(1);
 
+  const fondoRef = useRef<HTMLVideoElement>(null);
+  const frenteRef = useRef<HTMLVideoElement>(null);
+
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const fondoVideo = fondoRef.current;
+    const frenteVideo = frenteRef.current;
+
+    if (!fondoVideo || !frenteVideo) return;
 
     const handleEnded = () => {
       setPlaybackRate(prev => {
         const newRate = Math.min(prev + 0.5, 2);
-        video.playbackRate = newRate;
+        fondoVideo.playbackRate = newRate;
+        frenteVideo.playbackRate = newRate;
         return newRate;
       });
-      video.currentTime = 0;
-      video.play().catch(error => {
-        console.error("Error restarting video:", error);
-      });
+
+      fondoVideo.currentTime = 0;
+      frenteVideo.currentTime = 0;
+
+      fondoVideo.play().catch(error => console.error("Error reiniciando fondo.mp4:", error));
+      frenteVideo.play().catch(error => console.error("Error reiniciando frente.webm:", error));
     };
 
-    video.addEventListener("ended", handleEnded);
+    fondoVideo.addEventListener("ended", handleEnded);
+    frenteVideo.addEventListener("ended", handleEnded);
+
     return () => {
-      video.removeEventListener("ended", handleEnded);
+      fondoVideo.removeEventListener("ended", handleEnded);
+      frenteVideo.removeEventListener("ended", handleEnded);
     };
   }, []);
 
@@ -155,15 +166,19 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
   }, [countdown]);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const fondoVideo = fondoRef.current;
+    const frenteVideo = frenteRef.current;
+
+    if (!fondoVideo || !frenteVideo) return;
 
     if (isRacing && raceTime > 0) {
-      video.play().catch(error => {
-        console.error("Error playing video:", error);
-      });
+      fondoVideo.play().catch(error => console.error("Error playing fondo.mp4:", error));
+      frenteVideo.play().catch(error => console.error("Error playing frente.webm:", error));
     } else if (raceTime <= 0) {
-      video.pause();
+      fondoVideo.pause();
+      frenteVideo.pause();
+      fondoVideo.currentTime = 0;
+      frenteVideo.currentTime = 0;
     }
   }, [isRacing, raceTime]);
 
@@ -279,15 +294,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
             )}
 
             <video
-              src="/frente.mov"
-              className="absolute top-0 left-0 w-full h-full z-100"
-              preload="auto"
-              muted
-              playsInline
-            />
-
-            <video
-              ref={videoRef}
+              ref={fondoRef}
               src="/fondo.mp4"
               className="w-full h-full object-fill absolute top-0 left-0 z-[1]"
               preload="auto"
@@ -295,6 +302,14 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               playsInline
             />
 
+            <video
+              ref={frenteRef}
+              src="/frente.webm"
+              className="absolute top-0 left-0 w-full h-full object-cover z-[3]"
+              preload="auto"
+              muted
+              playsInline
+            />
             {isShipVisible && (
               <motion.img
                 animate={{
@@ -334,9 +349,8 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
               return (
                 <div
                   key={`${racer.id}-${triggerAnimation}`}
-                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${
-                    racer.id === ship.id ? "bg-yellow-500/20" : ""
-                  }`}
+                  className={`flex items-center gap-4 p-2 rounded animate-flip-move ${racer.id === ship.id ? "bg-yellow-500/20" : ""
+                    }`}
                   style={{ "--startY": `${translateY}px` } as React.CSSProperties}
                 >
                   {getPositionCircle(racer.position)}

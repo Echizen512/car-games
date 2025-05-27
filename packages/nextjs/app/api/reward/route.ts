@@ -18,23 +18,23 @@ const account = privateKeyToAccount((process.env.PRIVATE_KEY_MIGUEL as `0x${stri
 export const GET = async (request: NextRequest) => {
   const place = request.nextUrl.searchParams.get("place");
   const host = request.headers.get("host");
-  const referer = request.headers.get("referer");
-  console.log(host, referer, place); //Poner las reaules
-  // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-  //   return new Response("Unauthorized", {
-  //     status: 401,
-  //   });
-  // }
+  console.log("host", host, "place", place);
+
+  if (host !== "https://ship-games-nextjs.vercel.app/") {
+    return new Response("Unauthorized", {
+      status: 401,
+    });
+  }
 
   try {
-    // await writeContract(config, {
-    //   abi: financeAbi,
-    //   address: "0x1f396B60e1EC1F3356f9080E78be3dF003B8Ab93",
-    //   account: account,
-    //   functionName: "resetAllNftOwners",
-    // });
-    console.log("dios porque?");
-    return NextResponse.json({ ok: true, host, place, referer }, { status: 200 });
+    await writeContract(config, {
+      abi: financeAbi,
+      address: "0x1f396B60e1EC1F3356f9080E78be3dF003B8Ab93",
+      account: account,
+      functionName: "grantReward",
+      args: ["0xD2692F9df925D18D527ABe8b3d99EE9E9C8d75AE", 1n, 1n],
+    });
+    return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err) {
     console.log(err);
     return NextResponse.error();

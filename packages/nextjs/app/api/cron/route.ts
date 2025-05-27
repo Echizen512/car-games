@@ -30,7 +30,6 @@ export const GET = async (request: NextRequest) => {
       account: account,
       functionName: "resetAllNftOwners",
     });
-    console.log("ultima oportunidad");
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err) {
     console.log(err);

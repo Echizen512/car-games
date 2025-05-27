@@ -27,13 +27,13 @@ export const GET = async (request: NextRequest) => {
   // }
 
   try {
-    await writeContract(config, {
-      abi: financeAbi,
-      address: "0x1f396B60e1EC1F3356f9080E78be3dF003B8Ab93",
-      account: account,
-      functionName: "resetAllNftOwners",
-    });
-    console.log("ultima oportunidad");
+    // await writeContract(config, {
+    //   abi: financeAbi,
+    //   address: "0x1f396B60e1EC1F3356f9080E78be3dF003B8Ab93",
+    //   account: account,
+    //   functionName: "resetAllNftOwners",
+    // });
+    console.log("dios porque?");
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err) {
     console.log(err);

@@ -74,12 +74,12 @@ contract Finance is Ownable, ReentrancyGuard {
         }
     }
 
-    function raceStart(uint256 _nftID, bytes32 _rarity) public payable {
+    function raceStart(uint256 _nftID, bytes32 _rarity) public {
         address player = msg.sender;
-        require(ronkenNftContract.ownerOf(_nftID) == msg.sender, "You do not own this NFT");
+        // require(ronkenNftContract.ownerOf(_nftID) == msg.sender, "You do not own this NFT");
         require(ronKeTokenContract.balanceOf(player) >= minAmountRace, "Insufficient funds");
-        bool success = ronKeTokenContract.transferFrom(msg.sender, address(this), minAmountRace);
-        require(success, "Token transfer failed");
+        require(ronKeTokenContract.approve(address(this), minAmountRace), "Approval failed");
+        require(ronKeTokenContract.transferFrom(msg.sender, address(this), minAmountRace), "Token transfer failed");
 
         if (nftOwner[_nftID] == address(0)) {
             setDefaultFuel(_nftID, _rarity);

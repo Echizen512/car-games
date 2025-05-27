@@ -43,10 +43,10 @@ const Home: NextPage = () => {
   const getUserNFTs = useCallback(async () => {
     try {
       setLoaderNft(true);
-      const req = await fetch(`api/nft?address=${"0xc8b7aefc4a85bbec9c2e7db9850c56eddd2800b2"}`);
-      console.log(address);
+      const req = await fetch(`api/nft?address=${"0xc0fc9bfd335cde161598070812c3d59e26863518"}`);
       const res: INftDataSeaResponse = await req.json();
       setUserNfts(res.nfts);
+      console.log(address);
     } catch (err) {
       console.log(err);
     } finally {
@@ -72,7 +72,7 @@ const Home: NextPage = () => {
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-xl rounded-lg p-4 w-auto">
           <h2 className=" font-semibold flex items-center">
             Total Token Balance:
-            <span className=" font-bold text-yellow-300"> {formatEther(userBalance ?? 0n)} RKS</span>
+            <span className=" font-bold text-yellow-300">{formatEther(userBalance ?? 0n).slice(0, 12)} RKS</span>
           </h2>
         </div>
       </div>
@@ -119,7 +119,7 @@ const Home: NextPage = () => {
         <article className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-5 gap-2">
           <PlaceHolderNftCard />
         </article>
-      ) : userNfts === null || userNfts === undefined ? (
+      ) : userNfts === null || !userNfts ? (
         <AnimatePresence>
           <motion.article
             initial={{ opacity: 0 }}
@@ -132,13 +132,13 @@ const Home: NextPage = () => {
             </button>
           </motion.article>
         </AnimatePresence>
-      ) : userNfts.length > 0 && address !== undefined ? (
+      ) : userNfts.length > 0 && address && userBalance !== undefined ? (
         <article className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-5 gap-2">
           {userNfts
             .sort((a: INftDataSea, b: INftDataSea) => parseInt(a.identifier) - parseInt(b.identifier))
             .slice(currentViewNft.initial, currentViewNft.end)
             .map((x, y) => (
-              <NftCard key={y} data={x} selectedRarity={selectedRarity} />
+              <NftCard key={y} data={x} selectedRarity={selectedRarity} address={address} userBalance={userBalance} />
             ))}
         </article>
       ) : (

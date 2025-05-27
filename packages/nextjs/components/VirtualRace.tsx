@@ -50,15 +50,15 @@ const selectedConfig = configurations[Math.floor(Math.random() * configurations.
 const getStatsByCategory = (category: string) => {
   switch (category) {
     case "Common":
-      return { oil: 20, power: 30, speed: 30, handling: 40, stormStability: 20 };
+      return { oil: 30, power: 30, speed: 30, handling: 30, stormStability: 25 };
     case "Uncommon":
-      return { oil: 25, power: 25, speed: 50, handling: 50, stormStability: 25 };
+      return { oil: 50, power: 50, speed: 25, handling: 25, stormStability: 25 };
     case "Rare":
-      return { oil: 80, power: 85, speed: 90, handling: 80, stormStability: 85 };
+      return { oil: 65, power: 65, speed: 25, handling: 25, stormStability: 25 };
     case "Epic":
-      return { oil: 90, power: 95, speed: 100, handling: 90, stormStability: 95 };
+      return { oil: 85, power: 85, speed: 40, handling: 40, stormStability: 25 };
     default:
-      return { oil: 40, power: 40, speed: 30, handling: 50, stormStability: 55 };
+      return { oil: 30, power: 30, speed: 30, handling: 30, stormStability: 25 };
   }
 };
 

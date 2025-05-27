@@ -86,7 +86,7 @@ contract Finance is Ownable, ReentrancyGuard {
             oilBalances[_nftID] -= 15;
         }
         emit RaceStarted(player, _nftID);
-    }   
+    }
 
     function resetAllNftOwners() public onlyOwner {
         uint256 currentBlock = block.timestamp;

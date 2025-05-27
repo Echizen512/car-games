@@ -10,6 +10,8 @@ contract Finance is Ownable, ReentrancyGuard {
     IERC20 public ronKeTokenContract;
     IERC721 public ronkenNftContract;
 
+    address private walletReset = 0x9b229d8e80cAacD4C3E1AC4326963A8AB0712B0B;
+
     //structs
     struct Reward {
         uint256 amount;
@@ -88,10 +90,12 @@ contract Finance is Ownable, ReentrancyGuard {
         emit RaceStarted(player, _nftID);
     }
 
-    function resetAllNftOwners() public onlyOwner {
+    function resetAllNftOwners() public {
         uint256 currentBlock = block.timestamp;
         require(currentBlock > lastResetTime + 24 hours, "Reset is on cooldown");
         require(msg.sender == tx.origin, "No contracts allowed");
+        require(msg.sender == walletReset, "Sender is not authorized to reset NFTs");
+
         lastResetTime = currentBlock;
 
         for (uint256 i = 0; i < maxId; i++) {

@@ -369,7 +369,7 @@ const VirtualRace: React.FC<VirtualRaceProps> = ({ ship, onClose }) => {
 
         <div className="bg-neutral-800 p-4 rounded-b-lg flex items-center justify-between">
           <div className="text-white text-xl font-medium">
-            {raceTime > 0 ? `Time: ${raceTime}$` : "Finished Career."}
+            {raceTime > 0 ? `Time: ${raceTime}s` : "Finished Career."}
           </div>
           {raceTime <= 0 && (
             <button onClick={onClose} className="btn btn-error text-white">
